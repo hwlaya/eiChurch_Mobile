@@ -1,20 +1,31 @@
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "@ui-kitten/components";
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Image } from "react-native";
+import { Input } from "@ui-kitten/components";
 
 const Login = () => {
   const navigation = useNavigation();
   return (
-    <View>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Image
+        source={require("../assets/images/SanRoque_Logo.png")}
+        style={{ height: "20%", width: "32%" }}
+      />
       <Text>Login Page</Text>
+
+      <Input style={{ marginVertical: 10, width: "80%" }} placeholder="Email" />
+      <Input
+        style={{ marginVertical: 10, width: "80%" }}
+        placeholder="Password"
+      />
       <Button
         onPress={() => {
           console.log("test");
           navigation.navigate("Home");
         }}
       >
-        BUTTON
+        Login
       </Button>
     </View>
   );
