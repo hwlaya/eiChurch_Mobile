@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Button } from "@ui-kitten/components";
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Input } from "@ui-kitten/components";
 
 const Login = () => {
@@ -19,6 +19,18 @@ const Login = () => {
         style={{ marginVertical: 10, width: "80%" }}
         placeholder="Password"
       />
+
+      <Text>
+        Don't have an account yet? 
+         <TouchableOpacity><Text style={{color: 'blue'}}
+          onPress={()=> {
+            console.log("register");
+            navigation.navigate("Register");}}
+            >
+            Register here!
+          </Text></TouchableOpacity>
+      </Text>
+
       <Button
         onPress={() => {
           console.log("test");
@@ -27,6 +39,8 @@ const Login = () => {
       >
         Login
       </Button>
+
+    
     </View>
   );
 };
