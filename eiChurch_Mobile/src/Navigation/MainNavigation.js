@@ -37,14 +37,3 @@ export default function MainNavigation() {
     </NavigationContainer>
   );
 }
-
-// export default function MainNavigation() {
-//   return (
-//     <NavigationContainer>
-//       <AuthStack.Navigator>
-//         <AuthStack.Screen name="Login" component={Login} />
-//         <AuthStack.Screen name="Register" component={Register} />
-//       </AuthStack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
