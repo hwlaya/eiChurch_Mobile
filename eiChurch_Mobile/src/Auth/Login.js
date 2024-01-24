@@ -21,14 +21,18 @@ const Login = () => {
       />
 
       <Text>
-        Don't have an account yet? 
-         <TouchableOpacity><Text style={{color: 'blue'}}
-          onPress={()=> {
-            console.log("register");
-            navigation.navigate("Register");}}
-            >
+        Don't have an account yet?
+        <TouchableOpacity>
+          <Text
+            style={{ color: "blue" }}
+            onPress={() => {
+              console.log("register");
+              navigation.navigate("Register");
+            }}
+          >
             Register here!
-          </Text></TouchableOpacity>
+          </Text>
+        </TouchableOpacity>
       </Text>
 
       <Button
@@ -39,8 +43,6 @@ const Login = () => {
       >
         Login
       </Button>
-
-    
     </View>
   );
 };
