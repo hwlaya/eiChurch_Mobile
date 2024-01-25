@@ -37,7 +37,7 @@ const Login = () => {
 
       <Button
         onPress={() => {
-          console.log("test");
+          console.log("Go to home");
           navigation.navigate("Home");
         }}
       >
