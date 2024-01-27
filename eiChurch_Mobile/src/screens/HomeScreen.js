@@ -1,95 +1,108 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet} from "react-native";
+import { View, Image, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TouchableHighlight   } from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 import { useNavigation } from '@react-navigation/native';
-
-
+import { Card, Calendar } from '@ui-kitten/components';
 
 const HomeScreen = () => {
-    const navigation = useNavigation();
-  
-    return (
-      <View style={{ flex: 1, paddingTop: 30, alignItems: 'flex-start' }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-          {/* Layer 1: Church Logo */}
-          <Image
-            source={require('../assets/images/church_icon.png')}
-            style={{ width: 70, height: 70}}
-          />
-  
-          {/* Layer 2: EiChurch San Roque TITLE */}
-          <View>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>EiChurch</Text>
-            <Text style={{ fontSize: 16, color: 'gray', fontStyle: 'italic' }}>
-              San Roque Parish Church
-            </Text>
-          </View>
-  
-          {/* Temporary Hamburger Icon */}
-          <Image
-            source={require('../assets/images/menu-outline.png')}
-            style={{ width: 50, height: 50, marginLeft: 50}}
-          />
-        </View>
-  
-        {/* Temporary Carousel*/}
-        <Image
-          source={require('../assets/images/carousel.jpg')} 
-          style={{ width: '100%', height: 200, marginTop: 16 }}
-        />
+  const navigation = useNavigation();
 
-        {/* Daily Verse Section */}
-        <View style={styles.cardContainer}>
-        <Text style={styles.cardTitle}>Bible Verse of the Day</Text>
+  const carouselImages = [
+    { id: 1, source: require('../assets/images/carousel1.jpg') },
+    { id: 2, source: require('../assets/images/carousel2.jpg') },
+    { id: 3, source: require('../assets/images/carousel3.jpg') },
+  ];
 
-        
-        <View style={styles.separator} />{/* Line Separator */}
-        
-        <Text style={[styles.cardTitle2, { marginTop: 30 }]}>Philippians 4:13</Text>
-        <Text style={[styles.cardContent, {marginBottom: 30}]}>
-        I can do all things through Christ which strengthens me.
-        </Text>
-        </View>
+  const width = Dimensions.get('window').width;
 
-      </View>
-
-
-    );
+  const handleCarouselPress = () => {
+    // Redirect to the CurrentEvents page
+    navigation.navigate('CurrentEvents');
   };
 
-  const styles = StyleSheet.create({
-    cardContainer: {
-      marginTop: 16,
-      padding: 16,
-      width: '100%',
-      borderRadius: 10,
-      backgroundColor: 'white',
-      elevation: 3, // Shadow for Android
-      shadowColor: 'black', // Shadow for iOS
-      shadowOpacity: 0.3,
-      shadowRadius: 3,
-      shadowOffset: { width: 0, height: 2 },
-    },
-    cardTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      textAlign: 'center',
-    },
-    cardTitle2: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center',
-      },
-    cardContent: {
-      fontSize: 16,
-      color: 'black',
-      textAlign: 'center',
-      marginTop: 8,
-    },
-    separator: {
-        borderTopWidth: 1,
-        borderTopColor: 'gray',
-        marginVertical: 8,
-      },
-  });
+  const handleNewsPress = () => {
+    navigation.navigate('ChurchNewsAndUpdates');
+  };
+
+
+  return (
+    <ScrollView>
+    <View style={[styles.container, { marginTop: 100 // Manipulate temporary space
+  }]}> 
+      <Carousel
+        layout={'default'}
+        data={carouselImages}
+        sliderWidth={width}
+        itemWidth={width}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={handleCarouselPress}>
+            <Image key={item.id} source={item.source} style={styles.carouselImage} />
+          </TouchableOpacity>
+        )}
+        autoplay
+        autoplayInterval={3000} // Adjust slide time
+        loop
+      />
+
+          {/* Bible Verse of the Day Section */}
+      <Card style={styles.card}>
+      <Text category="h6" style={styles.title}>
+        Bible Verse of the Day
+      </Text>
+      <Text category="p">
+        "For God so loved the world that he gave his one and only Son, that whoever believes in
+        him shall not perish but have eternal life." - John 3:16
+      </Text>
+      </Card>
+
+      {/* Church News and Updates Section */}
+      <TouchableOpacity onPress={handleNewsPress} underlayColor="#DDDDDD">
+        <Card style={styles.card}>
+          <Text category="h6" style={{ marginBottom: 8 }}>
+            Church News and Updates
+          </Text>
+          <Text category="p">
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac fringilla turpis, vel
+            sollicitudin neque."
+          </Text>
+        </Card>
+      </TouchableOpacity>
+    
+    
+
+          {/* Calendar */}
+    <Card style={styles.calendarCard}>
+        <Text category="h6">Calendar</Text>
+        <Calendar />
+      </Card>
+    </View>
+    </ScrollView>
+      
+
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  carouselImage: {
+    width: '100%',
+    height: 200, // Adjust the height as needed
+    resizeMode: 'cover',
+  },
+  card: {
+    marginVertical: 10,
+    padding: 16,
+  },
+  title: {
+    marginBottom: 8,
+  },
+  calendarCard: {
+    margin: 16,
+  },
+});
 
 export default HomeScreen;
