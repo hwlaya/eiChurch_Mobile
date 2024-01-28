@@ -6,6 +6,9 @@ import Register from "../Auth/Register";
 import HomeScreen from "../screens/HomeScreen";
 import CurrentEvents from "../screens/CurrentEvents";
 import ChurchNewsAndUpdates from "../screens/ChurchNewsAndUpdates";
+import CelebrationEvents from "../screens/CelebrationEvents";
+import ChurchHistory from "../screens/ChurchHistory";
+import MissionAndVision from "../screens/MissionAndVision";
 
 const AuthStack = createNativeStackNavigator();
 
@@ -27,8 +30,11 @@ export default function MainNavigation() {
         <AuthStack.Screen name="Login" component={Login} />
         <AuthStack.Screen name="Register" component={Register} />
         <AuthStack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="CurrentEvents" component={CurrentEvents} />
-        <Stack.Screen name="ChurchNewsAndUpdates" component={ChurchNewsAndUpdates} />
+        <AuthStack.Screen name="CurrentEvents" component={CurrentEvents} />
+        <AuthStack.Screen name="ChurchNewsAndUpdates" component={ChurchNewsAndUpdates} />
+        <AuthStack.Screen name="CelebrationEvents" component={CelebrationEvents} />
+        <AuthStack.Screen name="ChurchHistory" component={ChurchHistory} />
+        <AuthStack.Screen name="MissionAndVision" component={MissionAndVision} />
       </AuthStack.Navigator>
     </NavigationContainer>
   );

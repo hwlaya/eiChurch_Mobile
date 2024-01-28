@@ -58,7 +58,7 @@ const Login = () => {
         New user?{' '}
         <Text
           style={{ color: '#3366FF', textDecorationLine: 'underline' }}
-          onPress={() => navigation.navigate('Register')}
+          onPress={() => navigation.navigate('Home')}
         >
           Create an account
         </Text>

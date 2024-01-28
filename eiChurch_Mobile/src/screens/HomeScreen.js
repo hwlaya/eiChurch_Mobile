@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Image, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TouchableHighlight   } from 'react-native';
-import Carousel from 'react-native-snap-carousel';
+import { View, Image, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Card, Calendar } from '@ui-kitten/components';
+import { Text, Card, Divider, Calendar } from '@ui-kitten/components';
+import Carousel from 'react-native-snap-carousel';
+import BibleVerseOfTheDay from '../components/BibleVerseOfTheDay';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -20,88 +21,113 @@ const HomeScreen = () => {
     navigation.navigate('CurrentEvents');
   };
 
-  const handleNewsPress = () => {
-    navigation.navigate('ChurchNewsAndUpdates');
-  };
-
-
   return (
-    <ScrollView>
-    <View style={[styles.container, { marginTop: 100 // Manipulate temporary space
-  }]}> 
-      <Carousel
-        layout={'default'}
-        data={carouselImages}
-        sliderWidth={width}
-        itemWidth={width}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={handleCarouselPress}>
-            <Image key={item.id} source={item.source} style={styles.carouselImage} />
-          </TouchableOpacity>
-        )}
-        autoplay
-        autoplayInterval={3000} // Adjust slide time
-        loop
-      />
+    <ScrollView style={styles.container}>
+      {/* Header and Logo */}
+      <View style={styles.headerContainer}>
+        <Text>Header</Text>
+        {/* Add your logo component here */}
+      </View>
 
-          {/* Bible Verse of the Day Section */}
+      {/* Carousel Section */}
+      <View style={styles.carouselContainer}>
+        <Carousel
+          layout={'default'}
+          data={carouselImages}
+          sliderWidth={width}
+          itemWidth={width}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={handleCarouselPress}>
+              <View style={styles.carouselItem}>
+                <Image key={item.id} source={item.source} style={styles.carouselImage} />
+              </View>
+            </TouchableOpacity>
+          )}
+          autoplay
+          autoplayInterval={3000}
+          loop
+        />
+      </View>
+
+      {/* Cards */}
+      <View style={styles.cardsContainer}>
+
+      {/* Card 1: Bible Verse of the Day */}
       <Card style={styles.card}>
-      <Text category="h6" style={styles.title}>
-        Bible Verse of the Day
-      </Text>
-      <Text category="p">
-        "For God so loved the world that he gave his one and only Son, that whoever believes in
-        him shall not perish but have eternal life." - John 3:16
-      </Text>
+        <BibleVerseOfTheDay />
       </Card>
 
-      {/* Church News and Updates Section BROKEN LINK****/} 
-      <TouchableOpacity onPress={handleNewsPress} underlayColor="#DDDDDD">
-        <Card style={styles.card}>
-          <Text category="h6" style={{ marginBottom: 8 }}>
-            Church News and Updates
-          </Text>
-          <Text category="p">
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce ac fringilla turpis, vel
-            sollicitudin neque."
-          </Text>
-        </Card>
-      </TouchableOpacity>
-    
-    
-
-          {/* Calendar */}
-    <Card style={styles.calendarCard}>
-        <Text category="h6">Calendar</Text>
-        <Calendar />
+      {/* Card 2: Church News and Updates */}
+      <Card style={styles.card} onPress={() => navigation.navigate('ChurchNewsAndUpdates')}>
+        <Text category="h5" style={styles.centerText}>
+          Church News and Updates
+        </Text>
+        <Divider style={styles.divider} />
+        {/* Content for Church News and Updates */}
+        <Text style={styles.exampleVerse}>
+          Stay updated with the latest news and events happening in our church community.
+        </Text>
       </Card>
-    </View>
+
+      {/* Calendar width not working */}
+      <Card style={styles.card} onPress={() => navigation.navigate('CelebrationEvents')}>
+          <Text category="h5" style={styles.centerText}>
+            Calendar of Events
+          </Text>
+          <Divider style={styles.divider} />  
+          <View style={styles.calendarContainer}> 
+            <Calendar />
+          </View>
+      </Card>
+
+
+      </View>
     </ScrollView>
-      
-
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
+  },
+  headerContainer: {
+    marginTop: 20,
+    marginBottom: 20,
     alignItems: 'center',
-    justifyContent: 'center',
+  },
+  carouselContainer: {
+    alignItems: 'center', // Center the carousel horizontally
+    marginBottom: 15, // Adjust the space below the carousel
+  },
+  carouselItem: {
+    width: '100%',
+    height: 200, // Set the desired height for the carousel items
+    overflow: 'hidden', // Clip the content to the specified dimensions
   },
   carouselImage: {
     width: '100%',
-    height: 200, // Adjust the height as needed
-    resizeMode: 'cover',
+    height: '100%', // Take up the full height of the parent View
+  },
+  cardsContainer: {
+    marginTop: 20,
   },
   card: {
-    marginVertical: 10,
+    marginBottom: 10,
     padding: 16,
   },
-  title: {
-    marginBottom: 8,
+  centerText: {
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
-  calendarCard: {
-    margin: 16,
+  divider: {
+    marginVertical: 8,
+  },
+  exampleVerse: {
+    marginTop: 8,
+  },
+  calendarContainer: {
+    width: '10%', // Calendar width
   },
 });
 
