@@ -55,7 +55,7 @@ const HomeScreen = () => {
       </Text>
       </Card>
 
-      {/* Church News and Updates Section */}
+      {/* Church News and Updates Section BROKEN LINK****/} 
       <TouchableOpacity onPress={handleNewsPress} underlayColor="#DDDDDD">
         <Card style={styles.card}>
           <Text category="h6" style={{ marginBottom: 8 }}>
