@@ -29,12 +29,12 @@ return (
     <Text category="h5" style={{ fontSize: 24, marginBottom: 8, fontWeight: 'bold', textAlign: 'center', }}>
       Bible Verse of the Day
     </Text>
-    <Divider style={{marginVertical: 8}} />
+    <Divider style={{marginVertical: 5, backgroundColor: '#949494'}} />
     {loading ? (
       <ActivityIndicator size="small" color="#3366FF" />
     ) : (
       <>
-        <Text style={{ fontSize: 20, fontStyle: 'italic' }}>{verse.text}</Text>
+        <Text style={{ fontSize: 18, fontStyle: 'italic'}}>{verse.text}</Text>
         <Text style={{ marginTop: 8 }}>- {verse.reference}</Text>
 
         <View style={{ position: 'absolute', bottom: 0, right: 0, margin: -30 }}>
