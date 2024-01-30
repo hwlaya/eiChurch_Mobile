@@ -18,7 +18,7 @@ const HomeScreen = () => {
 
   const handleCarouselPress = () => {
     // Redirect to the CurrentEvents page
-    navigation.navigate('CurrentEvents');
+    navigation.navigate('ChurchNewsAndUpdates');
   };
 
   return (

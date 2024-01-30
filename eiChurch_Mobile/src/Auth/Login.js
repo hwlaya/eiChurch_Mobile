@@ -11,7 +11,7 @@ const Login = () => {
   const handleLogin = () => {
     // Add your login logic here
     console.log('Login button pressed');
-    navigation.navigate("Home");
+    navigation.navigate("MissionAndVision");
   };
 
 
