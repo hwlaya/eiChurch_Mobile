@@ -1,41 +1,39 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Login from "../Auth/Login";
-import Register from "../Auth/Register";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../screens/HomeScreen";
-import CurrentEvents from "../screens/CurrentEvents";
-import ChurchNewsAndUpdates from "../screens/ChurchNewsAndUpdates";
-import CelebrationEvents from "../screens/CelebrationEvents";
 import ChurchHistory from "../screens/ChurchHistory";
-import MissionAndVision from "../screens/MissionAndVision";
+import { BottomNavigation, BottomNavigationTab } from "@ui-kitten/components";
+import Profile from "../screens/Profile";
 
-const AuthStack = createNativeStackNavigator();
+const { Navigator, Screen } = createBottomTabNavigator();
 
-const AuthStackScreen = () => {
+const BottomTabBar = ({ navigation, state }) => (
+  <BottomNavigation
+    appearance="noIndicator"
+    selectedIndex={state.index}
+    onSelect={(index) => navigation.navigate(state.routeNames[index])}
+  >
+    <BottomNavigationTab title="Home" />
+    <BottomNavigationTab title="Church" />
+    <BottomNavigationTab title="Profile" />
+  </BottomNavigation>
+);
+
+const MainNavigation = () => {
   return (
-    <AuthStack.Navigator>
-      <AuthStack.Screen name="Login" component={Login} />
-      <AuthStack.Screen name="Register" component={Register} />
-    </AuthStack.Navigator>
+    <NavigationContainer>
+      <Navigator
+        tabBar={(props) => <BottomTabBar {...props} />}
+        initialRouteName="Home"
+        screenOptions={{ headerShown: false }}
+      >
+        <Screen name="Home" component={HomeScreen} />
+        <Screen name="Church" component={ChurchHistory} />
+        <Screen name="Profile" component={Profile} />
+      </Navigator>
+    </NavigationContainer>
   );
 };
 
-const Stack = createNativeStackNavigator();
-
-export default function MainNavigation() {
-  return (
-    <NavigationContainer>
-      <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-        <AuthStack.Screen name="Login" component={Login} />
-        <AuthStack.Screen name="Register" component={Register} />
-        <AuthStack.Screen name="Home" component={HomeScreen} />
-        <AuthStack.Screen name="CurrentEvents" component={CurrentEvents} />
-        <AuthStack.Screen name="ChurchNewsAndUpdates" component={ChurchNewsAndUpdates} />
-        <AuthStack.Screen name="CelebrationEvents" component={CelebrationEvents} />
-        <AuthStack.Screen name="ChurchHistory" component={ChurchHistory} />
-        <AuthStack.Screen name="MissionAndVision" component={MissionAndVision} />
-      </AuthStack.Navigator>
-    </NavigationContainer>
-  );
-}
+export default MainNavigation;

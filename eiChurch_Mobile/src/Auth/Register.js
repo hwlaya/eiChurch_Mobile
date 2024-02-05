@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Input, Button, Text } from '@ui-kitten/components';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState } from "react";
+import { View, StyleSheet, Image } from "react-native";
+import { Input, Button, Text } from "@ui-kitten/components";
+import { useNavigation } from "@react-navigation/native";
 
 const Register = () => {
   const navigation = useNavigation();
@@ -10,7 +10,8 @@ const Register = () => {
 
   const handleRegister = () => {
     // Add your registration logic here
-    console.log('Register button pressed');
+    console.log("Register button pressed");
+    navigation.navigate("Home");
   };
 
   const togglePasswordVisibility = () => {
@@ -23,7 +24,10 @@ const Register = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('../assets/images/SanRoque_Logo.png')} style={styles.logo} />
+      <Image
+        source={require("../assets/images/SanRoque_Logo.png")}
+        style={styles.logo}
+      />
       <Text category="h5" style={styles.title}>
         Registration
       </Text>
@@ -79,41 +83,41 @@ const Register = () => {
         />
       </View>
 
-{/* Password Input with Show/Hide Button */}
-<View style={styles.passwordInputContainer}>
-  <Input
-    placeholder="Enter your password"
-    secureTextEntry={!passwordVisible}
-    autoCapitalize="none"
-    style={styles.passwordInput}
-  />
-  <Button
-    appearance="ghost"
-    status="basic"
-    onPress={togglePasswordVisibility}
-    style={styles.showHideButton}
-  >
-    {passwordVisible ? 'Hide' : 'Show'}
-  </Button>
-</View>
+      {/* Password Input with Show/Hide Button */}
+      <View style={styles.passwordInputContainer}>
+        <Input
+          placeholder="Enter your password"
+          secureTextEntry={!passwordVisible}
+          autoCapitalize="none"
+          style={styles.passwordInput}
+        />
+        <Button
+          appearance="ghost"
+          status="basic"
+          onPress={togglePasswordVisibility}
+          style={styles.showHideButton}
+        >
+          {passwordVisible ? "Hide" : "Show"}
+        </Button>
+      </View>
 
-{/* Confirm Password Input with Show/Hide Button */}
-<View style={styles.passwordInputContainer}>
-  <Input
-    placeholder="Confirm your password"
-    secureTextEntry={!confirmPasswordVisible}
-    autoCapitalize="none"
-    style={styles.passwordInput} // Updated style here
-  />
-  <Button
-    appearance="ghost"
-    status="basic"
-    onPress={toggleConfirmPasswordVisibility}
-    style={styles.showHideButton}
-  >
-    {confirmPasswordVisible ? 'Hide' : 'Show'}
-  </Button>
-</View>
+      {/* Confirm Password Input with Show/Hide Button */}
+      <View style={styles.passwordInputContainer}>
+        <Input
+          placeholder="Confirm your password"
+          secureTextEntry={!confirmPasswordVisible}
+          autoCapitalize="none"
+          style={styles.passwordInput}
+        />
+        <Button
+          appearance="ghost"
+          status="basic"
+          onPress={toggleConfirmPasswordVisibility}
+          style={styles.showHideButton}
+        >
+          {confirmPasswordVisible ? "Hide" : "Show"}
+        </Button>
+      </View>
 
       {/* Register Button */}
       <Button onPress={handleRegister} style={styles.button}>
@@ -121,10 +125,10 @@ const Register = () => {
       </Button>
 
       <Text style={styles.loginText}>
-        Already have an account?{' '}
+        Already have an account?{" "}
         <Text
-          style={{ color: '#3366FF', textDecorationLine: 'underline' }}
-          onPress={() => navigation.navigate('Login')}
+          style={{ color: "#3366FF", textDecorationLine: "underline" }}
+          onPress={() => navigation.navigate("Login")}
         >
           Log In
         </Text>
@@ -136,42 +140,44 @@ const Register = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 8, 
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    backgroundColor: "#ffffff", // Background color
   },
   logo: {
     width: 120,
     height: 120,
-    marginBottom: 8, 
+    marginBottom: 8,
+    borderRadius: 10, // Optional: Add border radius for a rounded look
   },
   title: {
-    textAlign: 'center',
-    color: 'black', 
+    textAlign: "center",
+    color: "black",
   },
   inputContainer: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
-    marginBottom: 12, 
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginBottom: 12,
   },
   label: {
-    color: 'black',
+    color: "black",
     fontSize: 14,
     marginBottom: 4,
-    textAlign: 'left',
+    textAlign: "left",
   },
   input: {
-    width: '95%',
+    width: "95%",
   },
   passwordInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 12,
-    width: '95%',
+    width: "95%",
   },
   passwordInput: {
-    width: '80%',
+    width: "80%",
     marginRight: 8,
   },
   showHideButton: {
@@ -179,12 +185,12 @@ const styles = StyleSheet.create({
   },
   button: {
     marginBottom: 16,
-    width: '95%',
-    backgroundColor: '#3366FF',
+    width: "95%",
+    backgroundColor: "#3366FF",
   },
   loginText: {
-    color: 'gray',
-    textAlign: 'center',
+    color: "gray",
+    textAlign: "center",
   },
 });
 
