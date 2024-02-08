@@ -2,12 +2,14 @@ import { useNavigation } from "@react-navigation/native";
 import { Button, Input, Text } from "@ui-kitten/components";
 import React, { useState } from "react";
 import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
+import api from "../../config/api";
 
 const Login = () => {
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleLogin = () => {
+    api.post("login", {});
     // Add your login logic here
     console.log("Login button pressed");
     navigation.replace("Home");

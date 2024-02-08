@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, Image } from "react-native";
 import { Input, Button, Text } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
+import api from "../../config/api";
 
 const Register = () => {
   const navigation = useNavigation();
@@ -9,6 +10,19 @@ const Register = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const handleRegister = () => {
+    api
+      .post("register", {
+        first_name: "wayne",
+        middle_name: "santos",
+        last_name: "chan",
+        email: "main.wayne22@gmail.com",
+        username: "WayneChan",
+        password: "123456789",
+      })
+
+      .then((response) => {
+        console.log(response);
+      });
     // Add your registration logic here
     console.log("Register button pressed");
     navigation.navigate("Home");
