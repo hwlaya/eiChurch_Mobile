@@ -5,6 +5,8 @@ import HomeScreen from "../screens/HomeScreen";
 import ChurchHistory from "../screens/ChurchHistory";
 import { BottomNavigation, BottomNavigationTab } from "@ui-kitten/components";
 import Profile from "../screens/Profile";
+import Login from "../Auth/Login";
+import Register from "../Auth/Register";
 
 const { Navigator, Screen } = createBottomTabNavigator();
 
@@ -25,12 +27,14 @@ const MainNavigation = () => {
     <NavigationContainer>
       <Navigator
         tabBar={(props) => <BottomTabBar {...props} />}
-        initialRouteName="Home"
+        initialRouteName="Login"
         screenOptions={{ headerShown: false }}
       >
+        <Screen name="Login" component={Login} />
         <Screen name="Home" component={HomeScreen} />
         <Screen name="Church" component={ChurchHistory} />
         <Screen name="Profile" component={Profile} />
+        <Screen name="Register" component={Register} />
       </Navigator>
     </NavigationContainer>
   );

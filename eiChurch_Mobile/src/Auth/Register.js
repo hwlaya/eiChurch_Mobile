@@ -22,10 +22,14 @@ const Register = () => {
 
       .then((response) => {
         console.log(response);
+      })
+      .catch((err) => {
+        // setLoading(false);
+        console.log(err.response);
       });
     // Add your registration logic here
     console.log("Register button pressed");
-    navigation.navigate("Home");
+    // navigation.navigate("Home");
   };
 
   const togglePasswordVisibility = () => {

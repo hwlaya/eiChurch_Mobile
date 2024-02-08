@@ -12,7 +12,7 @@ const Login = () => {
     api.post("login", {});
     // Add your login logic here
     console.log("Login button pressed");
-    navigation.replace("Home");
+    // navigation.replace("Home");
   };
 
   const togglePasswordVisibility = () => {
