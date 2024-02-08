@@ -9,10 +9,27 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   const handleLogin = () => {
-    api.post("login", {});
-    // Add your login logic here
-    console.log("Login button pressed");
-    // navigation.replace("Home");
+    api
+      .post("login", {
+        email: "brandangumila44@gmail.com",
+        password: "123456789",
+        isMobile: true,
+      })
+      .then((response) => {
+        console.log(response);
+        // setLoading(false);
+        // user.user = response.data.user;
+        // user.userProfile = response.data.user_profile;
+        // navigation.navigate("DrawerStack", {
+        //   screen: "Home",
+        //   params: {
+        //     user: response.data.user,
+        //   },
+        // });
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
   };
 
   const togglePasswordVisibility = () => {

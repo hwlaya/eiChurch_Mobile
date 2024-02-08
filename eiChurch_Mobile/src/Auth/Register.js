@@ -12,11 +12,11 @@ const Register = () => {
   const handleRegister = () => {
     api
       .post("register", {
-        first_name: "wayne",
-        middle_name: "santos",
-        last_name: "chan",
-        email: "main.wayne22@gmail.com",
-        username: "WayneChan",
+        first_name: "aeron",
+        middle_name: "aaron",
+        last_name: "desu",
+        email: "brandangumila44@gmail.com",
+        username: "AeronDesu",
         password: "123456789",
       })
 
