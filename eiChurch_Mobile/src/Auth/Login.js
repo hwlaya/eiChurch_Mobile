@@ -1,35 +1,40 @@
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useContext } from "react";
+import { View, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Button, Input, Text } from "@ui-kitten/components";
-import React, { useState } from "react";
-import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
-import api from "../../config/api";
+import { useNavigation } from "@react-navigation/native";
+import { UserContext } from "../providers/UserProvider";
 
 const Login = () => {
+  const { setUser } = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
-    api
-      .post("login", {
-        email: "brandangumila44@gmail.com",
-        password: "123456789",
-        isMobile: true,
-      })
-      .then((response) => {
-        console.log(response);
-        // setLoading(false);
-        // user.user = response.data.user;
-        // user.userProfile = response.data.user_profile;
-        // navigation.navigate("DrawerStack", {
-        //   screen: "Home",
-        //   params: {
-        //     user: response.data.user,
-        //   },
-        // });
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
+    setLoading(true);
+    if (email === "" || password === "") {
+      Alert.alert("Error!", "Please input your credentials!");
+      setLoading(false);
+    } else {
+      api
+        .post("login", {
+          email: email,
+          password: password,
+          isMobile: true,
+        })
+        .then((response) => {
+          setLoading(false);
+          setUser(response.data.user);
+          navigation.navigate("Home");
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+          Alert.alert("Error!", "Invalid credentials. Please try again.");
+        });
+    }
   };
 
   const togglePasswordVisibility = () => {
@@ -47,24 +52,25 @@ const Login = () => {
       </Text>
 
       {/* Email Input */}
-      <View style={styles.inputContainer}>
-        <Input
-          placeholder="Enter your email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          style={styles.input}
-        />
-      </View>
+      <Input
+        placeholder="Enter your email"
+        keyboardType="email-address"
+        autoCapitalize="none"
+        style={styles.input}
+        value={email}
+        onChangeText={setEmail}
+      />
 
       {/* Password Input with Show/Hide Button */}
       <View style={styles.passwordInputContainer}>
-        <View style={styles.passwordInput}>
-          <Input
-            placeholder="Enter your password"
-            secureTextEntry={!passwordVisible}
-            autoCapitalize="none"
-          />
-        </View>
+        <Input
+          placeholder="Enter your password"
+          secureTextEntry={!passwordVisible}
+          autoCapitalize="none"
+          style={styles.passwordInput}
+          value={password}
+          onChangeText={setPassword}
+        />
         <TouchableOpacity
           onPress={togglePasswordVisibility}
           style={styles.showHideButton}
@@ -73,10 +79,12 @@ const Login = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Login Button */}
       <Button onPress={handleLogin} style={styles.button}>
         Log In
       </Button>
 
+      {/* Register Text */}
       <Text style={styles.registerText}>
         New user?{" "}
         <Text
@@ -93,53 +101,40 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    padding: 16,
-    backgroundColor: "#ffffff", // Background color
+    alignItems: "center",
   },
   logo: {
-    width: 200,
-    height: 200,
-    marginBottom: 16,
-    borderRadius: 10, // Optional: Add border radius for a rounded look
+    width: 150,
+    height: 150,
+    marginBottom: 20,
   },
   title: {
-    marginBottom: 16,
+    marginBottom: 20,
     textAlign: "center",
-    color: "black", // Text color
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
   },
   input: {
-    flex: 1,
     width: "80%",
-    marginRight: 8,
+    marginBottom: 10,
   },
   passwordInputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 16,
+    width: "80%",
+    marginBottom: 10,
   },
   passwordInput: {
     flex: 1,
-    marginRight: 8,
   },
   showHideButton: {
-    padding: 8,
+    padding: 10,
   },
   button: {
-    marginBottom: 16,
-    width: "80%", // Adjust width as needed
-    backgroundColor: "#3366FF",
+    width: "80%",
+    marginBottom: 10,
   },
   registerText: {
-    color: "gray",
-    textAlign: "center",
+    marginTop: 10,
   },
 });
 

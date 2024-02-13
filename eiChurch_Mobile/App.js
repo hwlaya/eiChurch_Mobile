@@ -5,6 +5,7 @@ import * as eva from "@eva-design/eva";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import MainNavigation from "./src/Navigation/MainNavigation";
 import { useFonts } from "expo-font";
+import { UserProvider } from "./src/providers/UserProvider";
 
 const App = () => {
   const [fontsLoaded] = useFonts({
@@ -34,7 +35,9 @@ const App = () => {
     <SafeAreaProvider>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={eva.light}>
-        <MainNavigation />
+        <UserProvider>
+          <MainNavigation />
+        </UserProvider>
       </ApplicationProvider>
     </SafeAreaProvider>
   );

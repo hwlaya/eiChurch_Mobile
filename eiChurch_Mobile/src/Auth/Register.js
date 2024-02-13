@@ -13,11 +13,11 @@ const Register = () => {
     api
       .post("register", {
         first_name: "aeron",
-        middle_name: "aaron",
+        middle_name: "ron",
         last_name: "desu",
-        email: "brandangumila44@gmail.com",
-        username: "AeronDesu",
-        password: "123456789",
+        email: "brandangumila45@gmail.com",
+        username: "AeronDesu2",
+        password: "12345678",
       })
 
       .then((response) => {
