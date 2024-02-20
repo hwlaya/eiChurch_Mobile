@@ -3,9 +3,10 @@ import { View, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Button, Input, Text } from "@ui-kitten/components";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../providers/UserProvider";
+import api from "../../config/api";
 
 const Login = () => {
-  const { setUser } = useContext(UserContext);
+  const user = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
@@ -26,12 +27,12 @@ const Login = () => {
         })
         .then((response) => {
           setLoading(false);
-          setUser(response.data.user);
-          navigation.navigate("Home");
+          user.user = response.data.user;
+          navigation.navigate("HomeScreen");
         })
-        .catch((error) => {
+        .catch((err) => {
           setLoading(false);
-          console.log(error);
+          console.log(err.response);
           Alert.alert("Error!", "Invalid credentials. Please try again.");
         });
     }

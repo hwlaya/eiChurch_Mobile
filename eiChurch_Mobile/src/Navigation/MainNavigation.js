@@ -8,29 +8,22 @@ import ProfileScreen from "../screens/ProfileScreen";
 import Login from "../Auth/Login";
 import Register from "../Auth/Register";
 import { UserContext } from "../providers/UserProvider";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
+const AuthStack = createNativeStackNavigator();
 const { Navigator: TabNavigator, Screen: TabScreen } =
   createBottomTabNavigator();
 const { Navigator: StackNavigator, Screen: StackScreen } =
   createStackNavigator();
 
 const MainNavigation = () => {
-  const { user } = React.useContext(UserContext);
-
   return (
     <NavigationContainer>
-      {user ? (
-        <TabNavigator>
-          <TabScreen name="Home" component={HomeStack} />
-          <TabScreen name="Church" component={ChurchHistory} />
-          <TabScreen name="Profile" component={ProfileScreen} />
-        </TabNavigator>
-      ) : (
-        <StackNavigator screenOptions={{ headerShown: false }}>
-          <StackScreen name="Login" component={Login} />
-          <StackScreen name="Register" component={Register} />
-        </StackNavigator>
-      )}
+      <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+        <AuthStack.Screen name="Login" component={Login} />
+        <AuthStack.Screen name="Register" component={Register} />
+        <AuthStack.Screen name="HomeScreen" component={HomeScreen} />
+      </AuthStack.Navigator>
     </NavigationContainer>
   );
 };

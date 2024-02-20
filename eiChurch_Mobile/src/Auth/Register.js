@@ -9,15 +9,24 @@ const Register = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  const [firstName, setFirstName] = useState("");
+  const [middleName, setMiddleName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const handleRegister = () => {
     api
       .post("register", {
-        first_name: "aeron",
-        middle_name: "ron",
-        last_name: "desu",
-        email: "brandangumila45@gmail.com",
-        username: "AeronDesu2",
-        password: "12345678",
+        first_name: firstName,
+        middle_name: middleName,
+        last_name: lastName,
+        email: email,
+        username: username,
+        password: password,
+        password_confirmation: confirmPassword,
       })
 
       .then((response) => {
@@ -56,6 +65,8 @@ const Register = () => {
         <Input
           placeholder="Enter your username"
           autoCapitalize="none"
+          value={username}
+          onChangeText={setUsername}
           style={styles.input}
         />
       </View>
@@ -66,6 +77,8 @@ const Register = () => {
         <Input
           placeholder="Enter your first name"
           autoCapitalize="words"
+          value={firstName}
+          onChangeText={setFirstName}
           style={styles.input}
         />
       </View>
@@ -76,6 +89,8 @@ const Register = () => {
         <Input
           placeholder="Enter your middle name"
           autoCapitalize="words"
+          value={middleName}
+          onChangeText={setMiddleName}
           style={styles.input}
         />
       </View>
@@ -86,6 +101,8 @@ const Register = () => {
         <Input
           placeholder="Enter your last name"
           autoCapitalize="words"
+          value={lastName}
+          onChangeText={setLastName}
           style={styles.input}
         />
       </View>
@@ -97,6 +114,8 @@ const Register = () => {
           placeholder="E-mail: ex. juandelazruz@gmail.com"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
           style={styles.input}
         />
       </View>
@@ -107,6 +126,8 @@ const Register = () => {
           placeholder="Enter your password"
           secureTextEntry={!passwordVisible}
           autoCapitalize="none"
+          value={password}
+          onChangeText={setPassword}
           style={styles.passwordInput}
         />
         <Button
@@ -125,6 +146,8 @@ const Register = () => {
           placeholder="Confirm your password"
           secureTextEntry={!confirmPasswordVisible}
           autoCapitalize="none"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
           style={styles.passwordInput}
         />
         <Button
