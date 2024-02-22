@@ -9,8 +9,8 @@ const Login = () => {
   const user = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("tylerC@gmail.com");
+  const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
