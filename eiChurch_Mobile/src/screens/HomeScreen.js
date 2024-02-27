@@ -1,138 +1,171 @@
-import React from 'react';
-import { View, Image, StyleSheet, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Text, Card, Divider, Calendar } from '@ui-kitten/components';
-import Carousel from 'react-native-snap-carousel';
-import BibleVerseOfTheDay from '../components/BibleVerseOfTheDay';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Image,
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { Text, Card } from "@ui-kitten/components";
+import BibleVerseOfTheDay from "../components/BibleVerseOfTheDay";
+import Carousel from "react-native-reanimated-carousel";
+import api from "../../config/api";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
 
   const carouselImages = [
-    { id: 1, source: require('../assets/images/carousel1.jpg') },
-    { id: 2, source: require('../assets/images/carousel2.jpg') },
-    { id: 3, source: require('../assets/images/carousel3.jpg') },
+    { id: 1, source: require("../assets/images/carousel1.jpg") },
+    { id: 2, source: require("../assets/images/carousel2.jpg") },
+    { id: 3, source: require("../assets/images/carousel3.jpg") },
   ];
 
-  const width = Dimensions.get('window').width;
+  const width = Dimensions.get("window").width;
 
   const handleCarouselPress = () => {
     // Redirect to the CurrentEvents page
-    navigation.navigate('ChurchNewsAndUpdates');
+    navigation.navigate("ChurchNewsAndUpdates");
   };
 
+  const [announcements, setAnnouncements] = useState([]);
+
+  useEffect(() => {
+    // Fetch data here
+    const fetchAnnouncements = async () => {
+      // Make API call
+      try {
+        const response = await api.get(`announcement/all`);
+        setAnnouncements(response.data.announcements);
+      } catch (err) {
+        console.log(err.response);
+      }
+    };
+    fetchAnnouncements();
+  });
+
   return (
-    <ScrollView style={styles.container}>
-      {/* Header and Logo */}
-      <View style={styles.headerContainer}>
-        <Text style={{fontWeight: 'bold', fontSize: 16, fontStyle:'italic'}}>
-          Welcome, Juan Dela Cruz</Text>
-        {/* Add your logo component here */}
-      </View>
-
-      {/* Carousel Section */}
-      <View style={styles.carouselContainer}>
-        <Carousel
-          layout={'default'}
-          data={carouselImages}
-          sliderWidth={width}
-          itemWidth={width}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={handleCarouselPress}>
-              <View style={styles.carouselItem}>
-                <Image key={item.id} source={item.source} style={styles.carouselImage} />
-              </View>
-            </TouchableOpacity>
-          )}
-          autoplay
-          autoplayInterval={3000}
-          loop
-        />
-      </View>
-
-      {/* Cards */}
-      <View style={styles.cardsContainer}>
-
-      {/* Card 1: Bible Verse of the Day */}
-      <Card style={styles.card}>
-        <BibleVerseOfTheDay />
-      </Card>
-
-      <View>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 5 }}>
-          Church News and Updates
-        </Text>
-
-      {/* News and Updates Feed */}
-      <Card style={styles.card} onPress={() => navigation.navigate('ChurchNewsAndUpdates')}>
-        {/* Post 1 */}
-        <View style={styles.newsFeedItem}>
-          {/* Thumbnail */}
-          <Image
-            source={require('../assets/images/carousel1.jpg')} // Replace with actual thumbnail source
-            style={styles.thumbnail}
-          />
-          {/* Content */}
-          <View style={styles.newsContent}>
-            {/* Title */}
-            <Text style={styles.newsTitle}>Ika-2 Linggo sa Karaniwang Panahon</Text>
-            {/* Caption */}
-            <Text style={styles.newsCaption}>We invite you to submit your prayer intentions to be included in our..</Text>
-          </View>
-        </View>
-
-        {/* Post 2 */}
-        <View style={styles.newsFeedItem}>
-          {/* Thumbnail */}
-          <Image
-            source={require('../assets/images/carousel2.jpg')} // Replace with actual thumbnail source
-            style={styles.thumbnail}
-          />
-          {/* Content */}
-          <View style={styles.newsContent}>
-            {/* Title */}
-            <Text style={styles.newsTitle}>𝐋𝐢𝐧𝐠𝐠𝐮𝐡𝐚𝐧𝐠 𝐃𝐞𝐛𝐨𝐬𝐲𝐨𝐧 𝐤𝐚𝐲 𝐒𝐚𝐧 𝐑𝐨𝐪𝐮𝐞</Text>
-            {/* Caption */}
-            <Text style={styles.newsCaption}>Halina at magdebosyon sa ating Mahal na Patron!</Text>
-          </View>
-        </View>
-
-        {/* Post 3 */}
-        <View style={styles.newsFeedItem}>
-          {/* Thumbnail */}
-          <Image
-            source={require('../assets/images/carousel3.jpg')} // Replace with actual thumbnail source
-            style={styles.thumbnail}
-          />
-          {/* Content */}
-          <View style={styles.newsContent}>
-            {/* Title */}
-            <Text style={styles.newsTitle}>𝐏𝐢𝐬𝐭𝐚 𝐧𝐠 𝐈𝐭𝐢𝐦 𝐧𝐚 𝐍𝐚𝐳𝐚𝐫𝐞𝐧𝐨 | January 9, 2024</Text>
-            {/* Caption */}
-            <Text style={styles.newsCaption}>Taimtim nating pagnilayan ang paggugunita ng 𝐊𝐚𝐩𝐢𝐬𝐭𝐚𝐡𝐚𝐧 𝐧𝐠 𝐈𝐭𝐢𝐦 𝐧𝐚 𝐍𝐚𝐳𝐚𝐫𝐞𝐧𝐨</Text>
-          </View>
-        </View>
-      </Card>
-    </View>
-
-      {/* Calendar width not working */}
-      <Card style={styles.card} onPress={() => navigation.navigate('CelebrationEvents')}>
-          <Text category="h5" style={styles.centerText}>
-            Calendar of Events
+    <ImageBackground
+      source={require("../assets/images/background4.jpg")} // Specify the path to your background image
+      style={styles.backgroundImage}
+    >
+      <ScrollView style={styles.container}>
+        {/* Temporary Header*/}
+        <View style={styles.headerContainer}>
+          <Text
+            style={{
+              fontSize: 15,
+              fontFamily: "Montserrat-Bold",
+            }}
+          >
+            Welcome to San Roque Parish
           </Text>
-          <Divider style={styles.divider} />  
-          <View style={styles.calendarContainer}> 
-            <Calendar />
+        </View>
+
+        {/* Carousel Section */}
+        <View style={styles.carouselContainer}>
+          <Carousel
+            loop
+            width={width}
+            height={width / 2}
+            autoPlay={true}
+            data={carouselImages}
+            scrollAnimationDuration={1000}
+            //onSnapToItem={(index) => console.log("current index:", index)} //DEBUGGER
+            spanGestureHandlerProps={{ activeOffsetX: [-5, 5] }}
+            renderItem={({ item }) => (
+              <View style={{ flex: 1 }}>
+                <Image
+                  source={item.source} // Use the image source from the item in the carouselImages array
+                  style={{ width: "100%", height: "100%" }} // Adjust the image style as needed
+                  resizeMode="cover" // Adjust the resize mode as needed
+                />
+              </View>
+            )}
+          />
+        </View>
+
+        {/* Cards */}
+        <View style={styles.cardsContainer}>
+          {/* Card 1: Bible Verse of the Day */}
+          <Card style={styles.card}>
+            <BibleVerseOfTheDay />
+          </Card>
+
+          <View>
+            <Text style={styles.textStyle}>Church News and Updates</Text>
+
+            {/* News and Updates Feed */}
+            <Card
+              style={styles.card}
+              onPress={() => navigation.navigate("ChurchNewsAndUpdates")}
+            >
+              {/* Post 1 */}
+              {announcements.map((announcement, index) => (
+                <View key={index} style={styles.newsFeedItem}>
+                  <Image
+                    source={{
+                      uri: `http://192.168.68.109:8000/images/announcements/${announcement.announcement_image}`,
+                    }} // Replace with actual thumbnail source
+                    style={styles.thumbnail}
+                  />
+                  {/* Content */}
+                  <View style={styles.newsContent}>
+                    {/* Title */}
+                    <Text style={styles.newsTitle}>
+                      {announcement.announcement_title}
+                    </Text>
+                    {/* Caption */}
+                    <Text style={styles.newsCaption}>
+                      {announcement.announcement_content}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </Card>
           </View>
-      </Card>
-
-
-      </View>
-    </ScrollView>
+          <View>
+            <Card
+              style={styles.card}
+              onPress={() => navigation.navigate("Prayers")}
+            >
+              <Text style={styles.textStyle}>Prayers</Text>
+              <View style={{ height: 300, marginBottom: -100 }}>
+                <Image
+                  source={require("../assets/images/prayer.jpg")}
+                  style={styles.prayerThumbnail}
+                />
+              </View>
+              <Text style={styles.subTextStyle}>Need Guidance? Press Here</Text>
+            </Card>
+          </View>
+          <View>
+            <Text style={styles.textStyle}>Celebration and Events</Text>
+            <Card
+              style={styles.card}
+              onPress={() => navigation.navigate("CelebrationEvents")}
+            >
+              <Text>Celebration and Events</Text>
+            </Card>
+            <Text style={styles.textStyle}>Current Events</Text>
+            <Card
+              style={styles.card}
+              onPress={() => navigation.navigate("CurrentEvents")}
+            >
+              <Text>Current Events</Text>
+            </Card>
+          </View>
+        </View>
+      </ScrollView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     padding: 16,
@@ -140,20 +173,34 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginTop: 40,
     marginBottom: 20,
-    alignItems: 'left',
+    alignItems: "left",
   },
   carouselContainer: {
-    alignItems: 'center', // Center the carousel horizontally
-    marginBottom: 15, // Adjust the space below the carousel
+    alignItems: "center",
+    marginBottom: 10,
   },
   carouselItem: {
-    width: '100%',
+    width: "100%",
     height: 200, // Set the desired height for the carousel items
-    overflow: 'hidden', // Clip the content to the specified dimensions
+    overflow: "hidden", // Clip the content to the specified dimensions
   },
   carouselImage: {
-    width: '100%',
-    height: '100%', // Take up the full height of the parent View
+    width: "100%",
+    height: "100%", // Take up the full height of the parent View
+  },
+  textStyle: {
+    fontSize: 22,
+    marginBottom: 10,
+    fontFamily: "Montserrat-Bold",
+    color: "black",
+    textAlign: "center",
+  },
+  subTextStyle: {
+    fontSize: 20,
+    marginBottom: 5,
+    fontFamily: "Montserrat-Italic",
+    color: "black",
+    textAlign: "center",
   },
   cardsContainer: {
     marginTop: 20,
@@ -162,23 +209,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 5,
     borderRadius: 10,
+    backgroundColor: "#F3EFE0",
   },
   centerText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
+    textAlign: "center",
+    fontWeight: "bold",
   },
   divider: {
     marginVertical: 8,
   },
-  exampleVerse: {
-    marginTop: 8,
-  },
   calendarContainer: {
-    width: '10%', // Calendar width
+    width: "10%", // Calendar width
   },
   newsFeedItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 15,
     marginLeft: -15,
   },
@@ -186,19 +231,24 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginRight: 10,
-    resizeMode: 'cover', 
-    borderRadius: 10, 
+    resizeMode: "cover",
+    borderRadius: 10,
   },
   newsTitle: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   newsContent: {
     flex: 1,
   },
   newsCaption: {
     fontSize: 12,
-    color: 'gray',
+    color: "gray",
+  },
+  prayerThumbnail: {
+    width: "100%",
+    height: "60%",
+    borderRadius: 10,
   },
 });
 
