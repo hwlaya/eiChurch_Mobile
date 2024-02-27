@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { View, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import { Button, Input, Text } from "@ui-kitten/components";
+import { Button, Input } from "@ui-kitten/components";
+import { Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../providers/UserProvider";
 import api from "../../config/api";
@@ -9,7 +10,7 @@ const Login = () => {
   const user = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState("tylerC@gmail.com");
+  const [email, setEmail] = useState("asapR@gmail.com");
   const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +29,7 @@ const Login = () => {
         .then((response) => {
           setLoading(false);
           user.user = response.data.user;
-          navigation.navigate("HomeScreen");
+          navigation.navigate("Home");
         })
         .catch((err) => {
           setLoading(false);
@@ -48,7 +49,7 @@ const Login = () => {
         source={require("../assets/images/SanRoque_Logo.png")}
         style={styles.logo}
       />
-      <Text category="h4" style={styles.title}>
+      <Text variant="titleLarge" style={styles.title}>
         Welcome to San Roque Parish Church
       </Text>
 
@@ -89,7 +90,11 @@ const Login = () => {
       <Text style={styles.registerText}>
         New user?{" "}
         <Text
-          style={{ color: "#3366FF", textDecorationLine: "underline" }}
+          style={{
+            fontFamily: "Montserrat-Light",
+            color: "#3366FF",
+            textDecorationLine: "underline",
+          }}
           onPress={() => navigation.navigate("Register")}
         >
           Create an account
@@ -111,6 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
+    fontFamily: "Montserrat-Bold",
     marginBottom: 20,
     textAlign: "center",
   },
@@ -135,6 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   registerText: {
+    fontFamily: "Montserrat-SemiBold",
     marginTop: 10,
   },
 });

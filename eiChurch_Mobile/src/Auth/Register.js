@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Image } from "react-native";
-import { Input, Button, Text } from "@ui-kitten/components";
+import { View, StyleSheet, Image, Alert } from "react-native";
+import { Input, Button } from "@ui-kitten/components";
+import { Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import api from "../../config/api";
 
@@ -31,6 +32,7 @@ const Register = () => {
 
       .then((response) => {
         console.log(response);
+        Alert.alert("Success", "Registration successful!");
       })
       .catch((err) => {
         // setLoading(false);
@@ -38,7 +40,7 @@ const Register = () => {
       });
     // Add your registration logic here
     console.log("Register button pressed");
-    // navigation.navigate("Home");
+    navigation.navigate("Login");
   };
 
   const togglePasswordVisibility = () => {
@@ -55,13 +57,15 @@ const Register = () => {
         source={require("../assets/images/SanRoque_Logo.png")}
         style={styles.logo}
       />
-      <Text category="h5" style={styles.title}>
+      <Text variant="titleLarge" style={styles.title}>
         Registration
       </Text>
 
       {/* Username Input */}
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Username</Text>
+        <Text variant="labelLarge" style={styles.label}>
+          Username
+        </Text>
         <Input
           placeholder="Enter your username"
           autoCapitalize="none"
@@ -73,7 +77,9 @@ const Register = () => {
 
       {/* First Name Input */}
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>First Name</Text>
+        <Text variant="labelLarge" style={styles.label}>
+          First Name
+        </Text>
         <Input
           placeholder="Enter your first name"
           autoCapitalize="words"
@@ -85,7 +91,9 @@ const Register = () => {
 
       {/* Middle Name Input */}
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Middle Name (Optional)</Text>
+        <Text variant="labelLarge" style={styles.label}>
+          Middle Name (Optional)
+        </Text>
         <Input
           placeholder="Enter your middle name"
           autoCapitalize="words"
@@ -97,7 +105,9 @@ const Register = () => {
 
       {/* Last Name Input */}
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Last Name</Text>
+        <Text variant="labelLarge" style={styles.label}>
+          Last Name
+        </Text>
         <Input
           placeholder="Enter your last name"
           autoCapitalize="words"
@@ -109,7 +119,9 @@ const Register = () => {
 
       {/* Email Input */}
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>E-mail</Text>
+        <Text variant="labelLarge" style={styles.label}>
+          E-mail
+        </Text>
         <Input
           placeholder="E-mail: ex. juandelazruz@gmail.com"
           keyboardType="email-address"
@@ -168,7 +180,11 @@ const Register = () => {
       <Text style={styles.loginText}>
         Already have an account?{" "}
         <Text
-          style={{ color: "#3366FF", textDecorationLine: "underline" }}
+          style={{
+            fontFamily: "Montserrat-Light",
+            color: "#3366FF",
+            textDecorationLine: "underline",
+          }}
           onPress={() => navigation.navigate("Login")}
         >
           Log In
@@ -193,6 +209,7 @@ const styles = StyleSheet.create({
     borderRadius: 10, // Optional: Add border radius for a rounded look
   },
   title: {
+    fontFamily: "Montserrat-Bold",
     textAlign: "center",
     color: "black",
   },
@@ -202,6 +219,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   label: {
+    fontFamily: "Montserrat-SemiBold",
     color: "black",
     fontSize: 14,
     marginBottom: 4,
@@ -230,6 +248,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#3366FF",
   },
   loginText: {
+    fontFamily: "Montserrat-SemiBold",
     color: "gray",
     textAlign: "center",
   },

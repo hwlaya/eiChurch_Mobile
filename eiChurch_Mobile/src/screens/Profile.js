@@ -1,11 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, ScrollView, ImageBackground } from "react-native";
-import { Text, Card } from "@ui-kitten/components";
+import { Card } from "@ui-kitten/components";
+import { Text } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import Header from "../components/Header";
+import { UserContext } from "../providers/UserProvider";
+import { useNavigation } from "@react-navigation/native";
 
 const Profile = () => {
+  const { user } = useContext(UserContext);
+
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.container}>
+      <Header
+        logoSource={require("../assets/images/church_icon.png")}
+        title="eiChurch"
+        subtitle="San Roque Parish Church"
+      />
       <ImageBackground
         source={require("../assets/images/background.jpg")} // Specify the path to your background image
         style={styles.backgroundImage}
@@ -17,8 +32,9 @@ const Profile = () => {
               Member Information
             </Text>
             <Text category="p1">
-              Name: Juan Dela Cruz {"\n"}
-              Email: juan@example.com {"\n"}
+              Username: {user ? user.username : ""} {"\n"}
+              Name: {user ? user.name : ""} {"\n"}
+              Email: {user ? user.email : ""} {"\n"}
               Phone: +1234567890 {"\n"}
               Address: 123 Main St, City, Country
             </Text>
@@ -56,6 +72,11 @@ const Profile = () => {
               Purpose: Tithes and Offerings
             </Text>
           </Card>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ProfileScreen")}
+          >
+            <Icon name="arrow-left" size={50} color={"#FFF"} />
+          </TouchableOpacity>
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>

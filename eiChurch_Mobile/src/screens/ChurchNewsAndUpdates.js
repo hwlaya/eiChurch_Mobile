@@ -1,99 +1,133 @@
-import React from 'react';
-import { View, Image, StyleSheet, ScrollView } from 'react-native';
-import { Card, Divider, Text } from '@ui-kitten/components';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Image,
+  StyleSheet,
+  ScrollView,
+  ImageBackground,
+} from "react-native";
+import { Card, Divider } from "@ui-kitten/components";
+import { Text } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Header from "../components/Header";
+import api from "../../config/api";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { useNavigation } from "@react-navigation/native";
 
 const ChurchNewsAndUpdates = () => {
+  const navigation = useNavigation();
+
+  const [announcements, setAnnouncements] = useState([]);
+
+  useEffect(() => {
+    // Fetch data here
+    const fetchAnnouncements = async () => {
+      // Make API call
+      try {
+        const response = await api.get(`announcement/all`);
+        setAnnouncements(response.data.announcements);
+      } catch (err) {
+        console.log(err.response);
+      }
+    };
+    fetchAnnouncements();
+  });
+
   return (
-    <ScrollView style={styles.container}>
-    <View>
-      {/* Post 1 */}
-      <Card style={styles.card} onPress={() => console.log('Navigate to Post 1')}>
-        {/* Thumbnail */}
-        <Image
-          source={require('../assets/images/carousel1.jpg')} // Replace with actual thumbnail source
-          style={styles.thumbnail}
-        />
-        {/* Content */}
-        <View style={styles.newsContent}>
-          {/* Title */}
-          <Text style={styles.newsTitle}>Ika-2 Linggo sa Karaniwang Panahon</Text>
-          <Divider style={styles.divider} />  
-          {/* Caption */}
-          <Text style={styles.newsCaption}>
-            We invite you to submit your prayer intentions to be included in our...
-          </Text>
-        </View>
-      </Card>
+    <SafeAreaView style={styles.container}>
+      <Header
+        logoSource={require("../assets/images/church_icon.png")}
+        title="eiChurch"
+        subtitle="San Roque Parish Church"
+      />
+      <ImageBackground
+        source={require("../assets/images/background5.jpg")} // Specify the path to your background image
+        style={styles.backgroundImage}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <View>
+            <Text variant="headlineSmall" style={styles.textStyle}>
+              Church News and Updates
+            </Text>
+            {/* Post 1 */}
+            {announcements.map((announcement, index) => (
+              <Card
+                key={index}
+                style={styles.card}
+                onPress={() => console.log("Navigate to Post 1")}
+              >
+                <Image
+                  source={{
+                    uri: `http://192.168.68.109:8000/images/announcements/${announcement.announcement_image}`,
+                  }}
+                  style={styles.thumbnail}
+                />
+                <View style={styles.newsContent}>
+                  <Text style={styles.newsTitle}>
+                    {announcement.announcement_title}
+                  </Text>
+                  <Divider style={styles.divider} />
 
-      {/* Post 2 */}
-      <Card style={styles.card} onPress={() => console.log('Navigate to Post 2')}>
-        {/* Thumbnail */}
-        <Image
-          source={require('../assets/images/carousel2.jpg')} // Replace with actual thumbnail source
-          style={styles.thumbnail}
-        />
-        {/* Content */}
-        <View style={styles.newsContent}>
-          {/* Title */}
-          <Text style={styles.newsTitle}>𝐋𝐢𝐧𝐠𝐠𝐮𝐡𝐚𝐧𝐠 𝐃𝐞𝐛𝐨𝐬𝐲𝐨𝐧 𝐤𝐚𝐲 𝐒𝐚𝐧 𝐑𝐨𝐪𝐮𝐞</Text>
-          <Divider style={styles.divider} />  
-          {/* Caption */}
-          <Text style={styles.newsCaption}>Halina at magdebosyon sa ating Mahal na Patron!</Text>
-        </View>
-      </Card>
-
-      {/* Post 3 */}
-      <Card style={styles.card} onPress={() => console.log('Navigate to Post 3')}>
-        {/* Thumbnail */}
-        <Image
-          source={require('../assets/images/carousel3.jpg')} // Replace with actual thumbnail source
-          style={styles.thumbnail}
-        />
-        {/* Content */}
-        <View style={styles.newsContent}>
-          {/* Title */}
-          <Text style={styles.newsTitle}>𝐏𝐢𝐬𝐭𝐚 𝐧𝐠 𝐈𝐭𝐢𝐦 𝐧𝐚 𝐍𝐚𝐳𝐚𝐫𝐞𝐧𝐨 | January 9, 2024</Text>
-          <Divider style={styles.divider} />  
-          {/* Caption */}
-          <Text style={styles.newsCaption}>
-            Taimtim nating pagnilayan ang paggugunita ng 𝐊𝐚𝐩𝐢𝐬𝐭𝐚𝐡𝐚𝐧 𝐧𝐠 𝐈𝐭𝐢𝐦 𝐧𝐚 𝐍𝐚𝐳𝐚𝐫𝐞𝐧𝐨
-          </Text>
-        </View>
-      </Card>
-    </View>
-    </ScrollView>
+                  <Text style={styles.newsCaption}>
+                    {announcement.announcement_content}
+                  </Text>
+                </View>
+              </Card>
+            ))}
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+            <Icon name="arrow-left" size={50} color={"#000"} />
+          </TouchableOpacity>
+        </ScrollView>
+      </ImageBackground>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+    backgroundColor: "white",
+  },
+  backgroundImage: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 16,
   },
   card: {
     marginVertical: 7,
     borderRadius: 10,
   },
   thumbnail: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 5,
     marginBottom: 3,
   },
+  textStyle: {
+    marginBottom: 10,
+    fontFamily: "Montserrat-Bold",
+    color: "black",
+    textAlign: "left",
+  },
   newsContent: {
-
+    flex: 1,
   },
   newsTitle: {
+    fontFamily: "Montserrat-Bold",
     fontSize: 16,
-    fontWeight: 'bold',
     marginBottom: 8,
   },
   newsCaption: {
+    fontFamily: "Montserrat-Italic",
     fontSize: 14,
   },
   divider: {
     marginVertical: 2,
-    backgroundColor:'#949494',
+    backgroundColor: "#949494",
   },
 });
 
