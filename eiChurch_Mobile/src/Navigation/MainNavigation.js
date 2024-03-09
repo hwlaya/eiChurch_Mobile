@@ -14,7 +14,7 @@ import CelebrationEvents from "../screens/CelebrationEvents";
 import CurrentEvents from "../screens/CurrentEvents";
 import MissionAndVision from "../screens/MissionAndVision";
 import Prayers from "../screens/Prayers";
-import Profile from "../screens/Profile";
+import EditProfileScreen from "../screens/EditProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // Define stack navigators
@@ -69,7 +69,10 @@ const ProfileStack = () => {
     <ProfileStackNav.Navigator screenOptions={{ headerShown: false }}>
       <ProfileStackNav.Screen name="ProfileScreen" component={ProfileScreen} />
       <ProfileStackNav.Screen name="HomTabs" component={HomeTabs} />
-      <ProfileStackNav.Screen name="Profile" component={Profile} />
+      <ProfileStackNav.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+      />
     </ProfileStackNav.Navigator>
   );
 };

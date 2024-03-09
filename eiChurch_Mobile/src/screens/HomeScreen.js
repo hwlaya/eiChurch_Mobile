@@ -106,7 +106,7 @@ const HomeScreen = () => {
                 <View key={index} style={styles.newsFeedItem}>
                   <Image
                     source={{
-                      uri: `http://192.168.68.109:8000/images/announcements/${announcement.announcement_image}`,
+                      uri: `https://sanroqueparish.com/DataSonicCapstone-main/public/images/announcements/${announcement.announcement_image}`,
                     }} // Replace with actual thumbnail source
                     style={styles.thumbnail}
                   />

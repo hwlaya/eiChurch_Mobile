@@ -48,7 +48,7 @@ const ProfileScreen = () => {
           </View>
           <Card
             style={styles.card}
-            onPress={() => navigation.navigate("Profile")}
+            onPress={() => navigation.navigate("EditProfileScreen")}
           >
             <Text variant="titleMedium" style={styles.title}>
               My Profile

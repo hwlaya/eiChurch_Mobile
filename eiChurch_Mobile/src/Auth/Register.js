@@ -4,7 +4,7 @@ import { Input, Button } from "@ui-kitten/components";
 import { Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import api from "../../config/api";
-
+import Loading from "../components/Loading";
 const Register = () => {
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -18,6 +18,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
   const handleRegister = () => {
     api
       .post("register", {
@@ -32,6 +33,7 @@ const Register = () => {
 
       .then((response) => {
         console.log(response);
+        setLoading(true);
         Alert.alert("Success", "Registration successful!");
       })
       .catch((err) => {
@@ -53,6 +55,7 @@ const Register = () => {
 
   return (
     <View style={styles.container}>
+      <Loading loading={loading} />
       <Image
         source={require("../assets/images/SanRoque_Logo.png")}
         style={styles.logo}

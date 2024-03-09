@@ -59,7 +59,7 @@ const ChurchNewsAndUpdates = () => {
               >
                 <Image
                   source={{
-                    uri: `http://192.168.68.109:8000/images/announcements/${announcement.announcement_image}`,
+                    uri: `https://sanroqueparish.com/DataSonicCapstone-main/public/images/announcements/${announcement.announcement_image}`,
                   }}
                   style={styles.thumbnail}
                 />
