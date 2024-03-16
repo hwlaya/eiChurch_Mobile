@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, ScrollView, ImageBackground } from "react-native";
 import { Card } from "@ui-kitten/components";
 import { Text, TextInput } from "react-native-paper";

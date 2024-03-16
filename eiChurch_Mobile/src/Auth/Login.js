@@ -10,7 +10,7 @@ const Login = () => {
   const user = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState("sample@gmail.com");
+  const [email, setEmail] = useState("test_user@gmail.com");
   const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
 
