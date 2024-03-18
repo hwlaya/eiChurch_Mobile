@@ -63,7 +63,8 @@ const LiveStream = () => {
   return (
     <View
       style={{
-        flex: 1,
+        height: "100%",
+        width: "100%",
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -71,7 +72,7 @@ const LiveStream = () => {
       <WebView
         ref={webViewRef}
         pullToRefreshEnabled
-        style={{ paddingHorizontal: 150, flex: 1, marginTop: 100 }}
+        style={{ width: 360, height: '100%' }}
         source={{
           uri: decodeURI(
             `https://sanroqueparish.com/joinlive?jwt=${token}&room=${room}&reloadKey=${reloadKey}`
