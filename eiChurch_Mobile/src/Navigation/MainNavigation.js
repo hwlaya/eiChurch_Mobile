@@ -16,6 +16,7 @@ import MissionAndVision from "../screens/MissionAndVision";
 import Prayers from "../screens/Prayers";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import ReservationScreen from "../screens/ReservationScreen";
 
 // Define stack navigators
 const AuthStack = createNativeStackNavigator();
@@ -72,6 +73,10 @@ const ProfileStack = () => {
       <ProfileStackNav.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
+      />
+      <ProfileStackNav.Screen
+        name="ReservationScreen"
+        component={ReservationScreen}
       />
     </ProfileStackNav.Navigator>
   );

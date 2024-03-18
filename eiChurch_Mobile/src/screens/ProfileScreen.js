@@ -54,7 +54,10 @@ const ProfileScreen = () => {
               My Profile
             </Text>
           </Card>
-          <Card style={styles.card}>
+          <Card
+            style={styles.card}
+            onPress={() => navigation.navigate("ReservationScreen")}
+          >
             <Text variant="titleMedium" style={styles.title}>
               Reservations
             </Text>

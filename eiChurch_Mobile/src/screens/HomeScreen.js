@@ -42,7 +42,6 @@ const HomeScreen = () => {
         console.log(err.response);
       }
     };
-    fetchAnnouncements();
   });
 
   return (
