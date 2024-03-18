@@ -28,8 +28,13 @@ const Login = () => {
         })
         .then((response) => {
           setLoading(false);
-          user.user = response.data.user;
-          navigation.navigate("Home");
+          if(response.data.success) {
+            user.user = response.data.user;
+            user.token = response.data.token;
+            navigation.navigate("Home");
+          } else {
+            Alert.alert("Error!", "Invalid credentials. Please try again.");
+          }
         })
         .catch((err) => {
           setLoading(false);

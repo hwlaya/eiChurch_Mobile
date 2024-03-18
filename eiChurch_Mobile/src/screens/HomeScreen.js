@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Image,
@@ -12,6 +12,8 @@ import { Text, Card } from "@ui-kitten/components";
 import BibleVerseOfTheDay from "../components/BibleVerseOfTheDay";
 import Carousel from "react-native-reanimated-carousel";
 import api from "../../config/api";
+import { WebView } from 'react-native-webview';
+import { UserContext } from "../providers/UserProvider";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -23,6 +25,7 @@ const HomeScreen = () => {
   ];
 
   const width = Dimensions.get("window").width;
+  const user = useContext(UserContext)
 
   const handleCarouselPress = () => {
     // Redirect to the CurrentEvents page
@@ -30,6 +33,7 @@ const HomeScreen = () => {
   };
 
   const [announcements, setAnnouncements] = useState([]);
+  const [livestreams, setLiveStreams] = useState([]);
 
   useEffect(() => {
     // Fetch data here
@@ -42,7 +46,18 @@ const HomeScreen = () => {
         console.log(err.response);
       }
     };
-  });
+  }, []);
+
+  useEffect(() => {
+    api
+      .get("livestream/getalllivestreams")
+      .then((response) => {
+        setLiveStreams(response.data);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  }, []);
 
   return (
     <ImageBackground
@@ -154,6 +169,24 @@ const HomeScreen = () => {
             >
               <Text>Current Events</Text>
             </Card>
+          </View>
+          <View>
+            <Text style={styles.textStyle}>Live Streams</Text>
+            {livestreams.length > 0 && livestreams.map((item, index) => {
+              return (
+            <Card
+              style={styles.card}
+              onPress={() => navigation.navigate("LiveStream", {
+                token: user.token,
+                user: user.user,
+                room: item.livestream_name
+              })}
+              key={index}
+            >
+              <Text>{item.livestream_name}</Text>
+            </Card>
+              )
+            })}
           </View>
         </View>
       </ScrollView>

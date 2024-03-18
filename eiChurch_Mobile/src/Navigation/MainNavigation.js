@@ -17,6 +17,7 @@ import Prayers from "../screens/Prayers";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ReservationScreen from "../screens/ReservationScreen";
+import LiveStream from "../screens/LiveStream";
 
 // Define stack navigators
 const AuthStack = createNativeStackNavigator();
@@ -48,6 +49,7 @@ const HomeTabs = () => {
       <Tab.Screen name="HomeStack" component={HomeStack} />
       <Tab.Screen name="ChurchStack" component={ChurchStack} />
       <Tab.Screen name="ProfileStack" component={ProfileStack} />
+      <Tab.Screen name="LiveStream" component={LiveStream} />
     </Tab.Navigator>
   );
 };
