@@ -1,6 +1,13 @@
 import React from "react";
-import { StyleSheet, ScrollView, ImageBackground } from "react-native";
-import { Text, Card } from "@ui-kitten/components";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  ImageBackground,
+  Image,
+} from "react-native";
+import { Card, Divider } from "@ui-kitten/components";
+import { Text } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -22,16 +29,26 @@ const ChurchHistory = () => {
         style={styles.backgroundImage}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Image
+            source={require("../assets/images/historyofthechurch.jpg")}
+            style={styles.thumbnail}
+          />
+          <Text variant="headlineSmall" style={styles.textStyle}>
+            History of the Church
+          </Text>
           <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
-              History of the Church
-            </Text>
-            <Text category="p1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Text>
+            <View style={styles.newsContent}>
+              <Text style={styles.newsTitle}>
+                WE WANT TO SERVE THE WORLD AROUND US
+              </Text>
+              <Divider style={styles.divider} />
+              <Text variant="titleLarge" style={styles.newsCaption}>
+                San Roque Parish of the Roman Catholic Diocese of Cubao was
+                established on September 2, 1997. It is located in Bagumbayan,
+                Libis, City of Quezon. The Parish Fiesta is celebrated every
+                16th day of August.
+              </Text>
+            </View>
           </Card>
           <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
             <Icon name="arrow-left" size={50} color={"#000"} />
@@ -55,11 +72,46 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   card: {
-    marginBottom: 16,
-    padding: 16,
+    marginVertical: 7,
+    borderRadius: 10,
   },
-  title: {
+  thumbnail: {
+    width: "100%",
+    height: 200,
+    borderRadius: 5,
+    marginBottom: 3,
+  },
+  textStyle: {
+    fontFamily: "Montserrat-Bold",
+    color: "black",
+    textAlign: "left",
+    paddingVertical: 10,
+  },
+  subTextStyle: {
+    marginBottom: 10,
+    fontFamily: "Montserrat-Medium",
+    color: "black",
+    textAlign: "left",
+  },
+  newsContent: {
+    flex: 1,
+  },
+  newsTitle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 16,
     marginBottom: 8,
+  },
+  newsCaption: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
+  },
+  listItem: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 14,
+  },
+  divider: {
+    marginVertical: 2,
+    backgroundColor: "#949494",
   },
 });
 

@@ -18,6 +18,8 @@ import EditProfileScreen from "../screens/EditProfileScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import ReservationScreen from "../screens/ReservationScreen";
 import LiveStream from "../screens/LiveStream";
+import Accomplishments from "../screens/Accomplishments";
+import MembersOfTheChurch from "../screens/MembersOfTheChurch";
 
 // Define stack navigators
 const AuthStack = createNativeStackNavigator();
@@ -60,6 +62,14 @@ const ChurchStack = () => {
       <ChurchStackNav.Screen name="ChurchScreen" component={ChurchScreen} />
       <ChurchStackNav.Screen name="HomeTabs" component={HomeTabs} />
       <ChurchStackNav.Screen name="ChurchHistory" component={ChurchHistory} />
+      <ChurchStackNav.Screen
+        name="Accomplishments"
+        component={Accomplishments}
+      />
+      <ChurchStackNav.Screen
+        name="MembersOfTheChurch"
+        component={MembersOfTheChurch}
+      />
       <ChurchStackNav.Screen
         name="MissionAndVision"
         component={MissionAndVision}

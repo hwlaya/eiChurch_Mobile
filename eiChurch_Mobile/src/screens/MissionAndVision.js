@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, ImageBackground } from "react-native";
-import { Card } from "@ui-kitten/components";
+import { Card, Divider } from "@ui-kitten/components";
 import { Text } from "react-native-paper";
 import Header from "../components/Header";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,7 +10,6 @@ import { useNavigation } from "@react-navigation/native";
 
 const MissionAndVision = () => {
   const navigation = useNavigation();
-
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -23,25 +22,63 @@ const MissionAndVision = () => {
         style={styles.backgroundImage}
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Text variant="headlineSmall" style={styles.textStyle}>
+            Mission and Vision
+          </Text>
+          <Text variant="titleSmall" style={styles.subTextStyle}>
+            Discover the heart of our congregation through our mission and
+            vision.
+          </Text>
           <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
-              Mission and Vision
-            </Text>
-            <Text category="p">
-              <Text style={styles.boldText}>Our Mission:</Text> Lorem ipsum
-              dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-              ex ea commodo consequat.
-            </Text>
-            <Text category="p">
-              <Text style={styles.boldText}>Our Vision:</Text> Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-              veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-              ex ea commodo consequat.
-            </Text>
-            {/* Add more details about the mission and vision */}
+            <View style={styles.newsContent}>
+              <Text style={styles.newsTitle}>OUR MISSION</Text>
+              <Divider style={styles.divider} />
+              <Text style={styles.listItem}>
+                Embracing the Vision of the Manila Archdiocesan General Pastoral
+                Assembly, we as parishioner of San Roque in obedience to the
+                Word of God, to the Teachings of the Catholic Chruch, envision
+                an evangeleized and united parish through the guidance of our
+                holy patron, San Roque.{"\n"}
+              </Text>
+              <Text style={styles.listItem}>
+                To accomplish the Archdiocesan Vision through the guidance fo
+                the Holy Spirit and the intercession fot he Blessed Virgin Mary,
+                and the prayers of San Roque, we commit ourselves to:
+              </Text>
+            </View>
+          </Card>
+          <Card style={styles.card}>
+            <View style={styles.newsContent}>
+              <Text style={styles.newsTitle}>OUR VISION</Text>
+              <Divider style={styles.divider} />
+              <Text style={styles.listItem}>
+                1. Have a meaningful liturgical and devotional celebrations by
+                encouraging and making the congregation participate fully in all
+                our worship activities.{"\n"}
+              </Text>
+              <Text style={styles.listItem}>
+                2. Realize the programs that establish and build up Basic
+                Ecclesial Communities or “Mumunting Kapitbahayang Kristiyano.”
+                {"\n"}
+              </Text>
+              <Text style={styles.listItem}>
+                3. Realize formations and teachings relevant to all sectors of
+                the parish community.{"\n"}
+              </Text>
+              <Text style={styles.listItem}>
+                4. Implement evangelization programs, especially the PONDO NG
+                PINOY, necessarily responding to the needs of the economically
+                and scocially-marginalized in the parish.{"\n"}
+              </Text>
+              <Text style={styles.listItem}>
+                5. Support and find ways to finance the on-going physical
+                development and maintenance of the San Roque Church.{"\n"}
+              </Text>
+              <Text style={styles.listItem}>
+                6. We also commit ourselves to Jesus Christ, our Lord and
+                Savior, to be our model in our daily lives.{"\n"}
+              </Text>
+            </View>
           </Card>
           <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
             <Icon name="arrow-left" size={50} color={"#000"} />
@@ -60,19 +97,50 @@ const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
   },
-  card: {
-    marginBottom: 16,
-    padding: 16,
-  },
   scrollContent: {
     flexGrow: 1,
     padding: 16,
   },
-  title: {
+  card: {
+    marginVertical: 7,
+    borderRadius: 10,
+  },
+  thumbnail: {
+    width: "100%",
+    height: 200,
+    borderRadius: 5,
+    marginBottom: 3,
+  },
+  textStyle: {
+    fontFamily: "Montserrat-Bold",
+    color: "black",
+    textAlign: "left",
+  },
+  subTextStyle: {
+    marginBottom: 10,
+    fontFamily: "Montserrat-Medium",
+    color: "black",
+    textAlign: "left",
+  },
+  newsContent: {
+    flex: 1,
+  },
+  newsTitle: {
+    fontFamily: "Montserrat-Bold",
+    fontSize: 16,
     marginBottom: 8,
   },
-  boldText: {
-    fontWeight: "bold",
+  newsCaption: {
+    fontFamily: "Montserrat-Italic",
+    fontSize: 14,
+  },
+  listItem: {
+    fontFamily: "Montserrat-Regular",
+    fontSize: 14,
+  },
+  divider: {
+    marginVertical: 2,
+    backgroundColor: "#949494",
   },
 });
 

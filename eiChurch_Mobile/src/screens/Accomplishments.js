@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
   View,
   Image,
@@ -11,26 +11,11 @@ import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Header from "../components/Header";
-import api from "../../config/api";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 
-const CurrentEvents = () => {
+const Accomplishments = () => {
   const navigation = useNavigation();
-
-  const [announcements, setAnnouncements] = useState([]);
-
-  useEffect(() => {
-    // Make API call
-    api
-      .get(`announcement/all`)
-      .then((response) => {
-        setAnnouncements(response.data.announcements);
-      })
-      .catch((err) => {
-        console.log(err.response);
-      });
-  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -46,35 +31,44 @@ const CurrentEvents = () => {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View>
             <Text variant="headlineSmall" style={styles.textStyle}>
-              Current Events
+              Accomplishments
             </Text>
-            {/* Post 1 */}
-            {announcements.map((announcement, index) => (
-              <Card
-                key={index}
-                style={styles.card}
-                onPress={() => console.log("Navigate to Post 1")}
-              >
-                <Image
-                  source={{
-                    uri: `https://sanroqueparish.com/DataSonicCapstone-main/public/images/announcements/${announcement.announcement_image}`,
-                  }}
-                  style={styles.thumbnail}
-                />
-                <View style={styles.newsContent}>
-                  <Text style={styles.newsTitle}>
-                    {announcement.announcement_title}
-                  </Text>
-                  <Divider style={styles.divider} />
-
-                  <Text style={styles.newsCaption}>
-                    {announcement.announcement_content}
-                  </Text>
-                </View>
-              </Card>
-            ))}
+            <Text variant="titleSmall" style={styles.subTextStyle}>
+              Explore the remarkable achievements of our community, a testament
+              to our shared dedication, resilience, and commitment to our values
+            </Text>
+            <Card style={styles.card}>
+              <Image
+                source={require("../assets/images/accomplishments1.jpg")}
+                style={styles.thumbnail}
+              />
+            </Card>
+            <Card style={styles.card}>
+              <Image
+                source={require("../assets/images/accomplishments2.jpg")}
+                style={styles.thumbnail}
+              />
+            </Card>
+            <Card style={styles.card}>
+              <Image
+                source={require("../assets/images/accomplishments3.jpg")}
+                style={styles.thumbnail}
+              />
+            </Card>
+            <Card style={styles.card}>
+              <Image
+                source={require("../assets/images/accomplishments4.jpg")}
+                style={styles.thumbnail}
+              />
+            </Card>
+            <Card style={styles.card}>
+              <Image
+                source={require("../assets/images/accomplishments5.jpg")}
+                style={styles.thumbnail}
+              />
+            </Card>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate("HomeScreen")}>
+          <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
             <Icon name="arrow-left" size={50} color={"#000"} />
           </TouchableOpacity>
         </ScrollView>
@@ -101,13 +95,18 @@ const styles = StyleSheet.create({
   },
   thumbnail: {
     width: "100%",
-    height: 200,
-    borderRadius: 5,
+    height: 400,
+    borderRadius: 3,
     marginBottom: 3,
   },
   textStyle: {
-    marginBottom: 10,
     fontFamily: "Montserrat-Bold",
+    color: "black",
+    textAlign: "left",
+  },
+  subTextStyle: {
+    marginBottom: 10,
+    fontFamily: "Montserrat-Medium",
     color: "black",
     textAlign: "left",
   },
@@ -129,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CurrentEvents;
+export default Accomplishments;

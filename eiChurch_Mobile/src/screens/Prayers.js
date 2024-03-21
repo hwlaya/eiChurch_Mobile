@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     fontFamily: "Montserrat-Bold",
     color: "black",
     textAlign: "left",
+    paddingVertical: 10,
   },
   newsContent: {
     flex: 1,

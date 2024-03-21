@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, ScrollView, ImageBackground } from "react-native";
-import { Text, Card } from "@ui-kitten/components";
+import { Card } from "@ui-kitten/components";
+import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Header from "../components/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -24,65 +25,54 @@ const ChurchScreen = () => {
             style={styles.card}
             onPress={() => navigation.navigate("ChurchHistory")}
           >
-            <Text category="h4" style={styles.title}>
+            <Text variant="headlineSmall" style={styles.title}>
               History of the Church
             </Text>
-            <Text category="p1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+            <Text variant="titleMedium" style={styles.subTitle}>
+              WE WANT TO SERVE THE WORLD AROUND US
+            </Text>
+            <Text variant="titleSmall" style={styles.caption}>
+              San Roque Parish of the Roman Catholic Diocese of Cubao was
+              established on September 2, 1997. It is located in Bagumbayan,
+              Libis, City of Quezon. The Parish Fiesta is celebrated every 16th
+              day of August.
             </Text>
           </Card>
-
-          <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
+          <Card
+            style={styles.card}
+            onPress={() => navigation.navigate("MissionAndVision")}
+          >
+            <Text variant="headlineSmall" style={styles.title}>
+              Mission and Vision
+            </Text>
+            <Text variant="titleSmall" style={styles.caption}>
+              Discover the heart of our congregation through our mission and
+              vision.
+            </Text>
+          </Card>
+          <Card
+            style={styles.card}
+            onPress={() => navigation.navigate("Accomplishments")}
+          >
+            <Text variant="headlineSmall" style={styles.title}>
               Accomplishments
             </Text>
-            <Text category="p1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Text>
-          </Card>
-
-          <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
-              Members of the Church (Founder & Current)
-            </Text>
-            <Text category="p1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+            <Text variant="titleSmall" style={styles.caption}>
+              Explore the remarkable achievements of our community, a testament
+              to our shared dedication, resilience, and commitment to our values
             </Text>
           </Card>
 
           <Card
             style={styles.card}
-            onPress={() => navigation.navigate("MissionAndVision")}
+            onPress={() => navigation.navigate("MembersOfTheChurch")}
           >
-            <Text category="h4" style={styles.title}>
-              Mission and Vision
+            <Text variant="headlineSmall" style={styles.title}>
+              Members Of The Church
             </Text>
-            <Text category="p1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Text>
-          </Card>
-
-          <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
-              Statement of Inclusivity
-            </Text>
-            <Text category="p1">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+            <Text variant="titleSmall" style={styles.caption}>
+              Meet the vibrant members of our church community, each
+              contributing their unique gifts, perspectives, and experiences
             </Text>
           </Card>
         </ScrollView>
@@ -108,6 +98,18 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
+    fontFamily: "Montserrat-Bold",
+    color: "black",
+    textAlign: "left",
+    paddingVertical: 5,
+  },
+  subTitle: {
+    fontFamily: "Montserrat-Medium",
+    color: "black",
+    textAlign: "left",
+  },
+  caption: {
+    fontFamily: "Montserrat-Light",
     marginBottom: 8,
   },
 });

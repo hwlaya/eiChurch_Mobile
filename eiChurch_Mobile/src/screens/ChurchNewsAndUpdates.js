@@ -21,18 +21,16 @@ const ChurchNewsAndUpdates = () => {
   const [announcements, setAnnouncements] = useState([]);
 
   useEffect(() => {
-    // Fetch data here
-    const fetchAnnouncements = async () => {
-      // Make API call
-      try {
-        const response = await api.get(`announcement/all`);
+    // Make API call
+    api
+      .get(`announcement/all`)
+      .then((response) => {
         setAnnouncements(response.data.announcements);
-      } catch (err) {
+      })
+      .catch((err) => {
         console.log(err.response);
-      }
-    };
-    fetchAnnouncements();
-  });
+      });
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

@@ -36,9 +36,12 @@ const EditProfileScreen = () => {
       >
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Your EditProfileScreen content goes here */}
+          <Text variant="headlineLarge" style={styles.textStyle}>
+            Edit Profile
+          </Text>
           <Card style={styles.card}>
-            <Text variant="headlineSmall" style={styles.title}>
-              Edit Profile
+            <Text variant="titleLarge" style={styles.title}>
+              Profile
             </Text>
             <Text>Username: </Text>
             <TextInput
@@ -57,7 +60,7 @@ const EditProfileScreen = () => {
                 height: 35,
                 width: "75%",
               }}
-              outlineStyle={{ borderRadius: 20 }}
+              outlineStyle={{ borderRadius: 10 }}
               value={user ? user.name : ""}
               // onChangeText={(value) => setFname(value)}
               mode="outlined"
@@ -68,7 +71,7 @@ const EditProfileScreen = () => {
                 height: 35,
                 width: "75%",
               }}
-              outlineStyle={{ borderRadius: 20 }}
+              outlineStyle={{ borderRadius: 10 }}
               value={user ? user.email : ""}
               // onChangeText={(value) => setFname(value)}
               mode="outlined"
@@ -76,8 +79,8 @@ const EditProfileScreen = () => {
           </Card>
 
           <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
-              Change Password:
+            <Text variant="titleLarge" style={styles.title}>
+              Change Password
             </Text>
             <Text>Current Password: </Text>
             <TextInput
@@ -113,18 +116,6 @@ const EditProfileScreen = () => {
               mode="outlined"
             />
           </Card>
-
-          <Card style={styles.card}>
-            <Text category="h4" style={styles.title}>
-              Donations
-            </Text>
-            <Text category="p1">
-              Total Donations: $1000 {"\n"}
-              Last Donation: December 15, 2023 {"\n"}
-              Recipient: Church of St. John {"\n"}
-              Purpose: Tithes and Offerings
-            </Text>
-          </Card>
           <TouchableOpacity
             onPress={() => navigation.navigate("ProfileScreen")}
           >
@@ -152,9 +143,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 16,
   },
+  textStyle: {
+    marginBottom: 8,
+    fontFamily: "Montserrat-Medium",
+    color: "white",
+  },
   title: {
     marginBottom: 8,
     fontFamily: "Montserrat-Medium",
+    color: "black",
   },
 });
 

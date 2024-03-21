@@ -5,8 +5,12 @@ import { Button } from "react-native-paper";
 import { WebView } from "react-native-webview";
 import { Camera } from "expo-camera";
 import { UserContext } from "../providers/UserProvider";
+import Header from "../components/Header";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from "@react-navigation/native";
 
 const LiveStream = () => {
+  const navigation = useNavigation();
   const route = useRoute();
   const user = useContext(UserContext);
   const { token, room } = route.params;
@@ -23,7 +27,7 @@ const LiveStream = () => {
 
   const handleRefresh = () => {
     // Increment reload key to trigger reload
-    setReloadKey(prevKey => prevKey + 1);
+    setReloadKey((prevKey) => prevKey + 1);
   };
 
   const handleForceReload = () => {
@@ -44,7 +48,7 @@ const LiveStream = () => {
     // Handle permission request
     const { origin, permission } = event;
     console.log(`Permission request from ${origin}:`, permission);
-    
+
     if (permission === "media") {
       // Check if camera permission is granted
       const { status } = await Camera.requestPermissionsAsync();
@@ -67,12 +71,19 @@ const LiveStream = () => {
         width: "100%",
         justifyContent: "center",
         alignItems: "center",
+        padding: 50,
+        flex: 1,
       }}
     >
+      <Header
+        logoSource={require("../assets/images/church_icon.png")}
+        title="eiChurch"
+        subtitle="San Roque Parish Church"
+      />
       <WebView
         ref={webViewRef}
         pullToRefreshEnabled
-        style={{ width: 360, height: '100%' }}
+        style={{ width: 360, height: "100%" }}
         source={{
           uri: decodeURI(
             `https://sanroqueparish.com/joinlive?jwt=${token}&room=${room}&reloadKey=${reloadKey}`
@@ -83,6 +94,10 @@ const LiveStream = () => {
       {/* <Button onPress={handleRefresh}>Force Refresh</Button>
       <Button onPress={handleForceReload}>Force Reload</Button>
       <Button onPress={handleClearCache}>Clear Cache</Button> */}
+      <Button
+        onPress={() => navigation.navigate("HomeScreen")}
+        icon={() => <Icon name="arrow-left" size={50} color={"#000"} />}
+      />
     </View>
   );
 };

@@ -12,8 +12,9 @@ import { Text, Card } from "@ui-kitten/components";
 import BibleVerseOfTheDay from "../components/BibleVerseOfTheDay";
 import Carousel from "react-native-reanimated-carousel";
 import api from "../../config/api";
-import { WebView } from 'react-native-webview';
+import { WebView } from "react-native-webview";
 import { UserContext } from "../providers/UserProvider";
+import { Octicons } from "@expo/vector-icons";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -25,7 +26,7 @@ const HomeScreen = () => {
   ];
 
   const width = Dimensions.get("window").width;
-  const user = useContext(UserContext)
+  const user = useContext(UserContext);
 
   const handleCarouselPress = () => {
     // Redirect to the CurrentEvents page
@@ -36,16 +37,15 @@ const HomeScreen = () => {
   const [livestreams, setLiveStreams] = useState([]);
 
   useEffect(() => {
-    // Fetch data here
-    const fetchAnnouncements = async () => {
-      // Make API call
-      try {
-        const response = await api.get(`announcement/all`);
+    // Make API call
+    api
+      .get(`announcement/all`)
+      .then((response) => {
         setAnnouncements(response.data.announcements);
-      } catch (err) {
+      })
+      .catch((err) => {
         console.log(err.response);
-      }
-    };
+      });
   }, []);
 
   useEffect(() => {
@@ -140,53 +140,81 @@ const HomeScreen = () => {
             </Card>
           </View>
           <View>
-            <Card
-              style={styles.card}
-              onPress={() => navigation.navigate("Prayers")}
-            >
-              <Text style={styles.textStyle}>Prayers</Text>
-              <View style={{ height: 300, marginBottom: -100 }}>
-                <Image
-                  source={require("../assets/images/prayer.jpg")}
-                  style={styles.prayerThumbnail}
-                />
-              </View>
-              <Text style={styles.subTextStyle}>Need Guidance? Press Here</Text>
-            </Card>
-          </View>
-          <View>
             <Text style={styles.textStyle}>Celebration and Events</Text>
             <Card
               style={styles.card}
               onPress={() => navigation.navigate("CelebrationEvents")}
             >
-              <Text>Celebration and Events</Text>
+              <Text style={styles.subTitle}>CELEBRATION EVENTS CALENDAR</Text>
+              <Text style={styles.caption}>
+                Join us in commemorating the joyous moments and meaningful
+                occasions that mark our shared journey of faith and fellowship.
+              </Text>
             </Card>
+            <View>
+              <Card
+                style={styles.card}
+                onPress={() => navigation.navigate("Prayers")}
+              >
+                <Text style={styles.textStyle}>Prayers</Text>
+                <View style={{ height: 300, marginBottom: -100 }}>
+                  <Image
+                    source={require("../assets/images/prayer.jpg")}
+                    style={styles.prayerThumbnail}
+                  />
+                </View>
+                <Text style={styles.subTextStyle}>
+                  Need Guidance? Press Here
+                </Text>
+              </Card>
+            </View>
+            <View>
+              <Text style={styles.textStyle}>Live Streams</Text>
+              {livestreams.length > 0 &&
+                livestreams.map((item, index) => {
+                  return (
+                    <Card
+                      style={styles.card}
+                      onPress={() =>
+                        navigation.navigate("LiveStream", {
+                          token: user.token,
+                          user: user.user,
+                          room: item.livestream_name,
+                        })
+                      }
+                      key={index}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Octicons
+                          name="device-camera-video"
+                          size={24}
+                          color="black"
+                        />
+                        {""}
+                        <Text style={styles.subTextStyle}>
+                          {item.livestream_name}
+                        </Text>
+                      </View>
+                    </Card>
+                  );
+                })}
+            </View>
             <Text style={styles.textStyle}>Current Events</Text>
             <Card
               style={styles.card}
               onPress={() => navigation.navigate("CurrentEvents")}
             >
-              <Text>Current Events</Text>
+              <Text style={styles.caption}>
+                Stay informed and engaged with the latest happenings and
+                activities in our church community through our current events.
+              </Text>
             </Card>
-          </View>
-          <View>
-            <Text style={styles.textStyle}>Live Streams</Text>
-            {livestreams.length > 0 && livestreams.map((item, index) => {
-              return (
-            <Card
-              style={styles.card}
-              onPress={() => navigation.navigate("LiveStream", {
-                token: user.token,
-                user: user.user,
-                room: item.livestream_name
-              })}
-              key={index}
-            >
-              <Text>{item.livestream_name}</Text>
-            </Card>
-              )
-            })}
           </View>
         </View>
       </ScrollView>
@@ -229,8 +257,22 @@ const styles = StyleSheet.create({
   },
   subTextStyle: {
     fontSize: 20,
-    marginBottom: 5,
+    marginBottom: 4,
+    paddingHorizontal: 10,
     fontFamily: "Montserrat-Italic",
+    color: "black",
+    textAlign: "center",
+  },
+  subTitle: {
+    fontSize: 16,
+    marginBottom: 8,
+    fontFamily: "Montserrat-SemiBold",
+    color: "black",
+    textAlign: "center",
+  },
+  caption: {
+    marginBottom: 10,
+    fontFamily: "Montserrat-Medium",
     color: "black",
     textAlign: "center",
   },
