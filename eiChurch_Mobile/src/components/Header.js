@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 70,
     height: 70,
-    borderRadius: 60,
+    // borderRadius: ,
     marginBottom: 20,
   },
   textContainer: {

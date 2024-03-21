@@ -66,7 +66,7 @@ const ReservationScreen = () => {
     // Update sacrament fee when selected sacrament changes
     if (selectedSacrament) {
       const selectedSacramentData = sacraments.find(
-        (sacrament) => sacrament.sacrament === selectedSacrament
+        (sacrament) => sacrament.id === selectedSacrament
       );
       if (selectedSacramentData) {
         setSacramentFee(selectedSacramentData.fee);
@@ -85,6 +85,7 @@ const ReservationScreen = () => {
     console.log(result);
 
     if (!result.canceled) {
+      console.log("result:", result.assets[0]);
       setRequirementImageUri(result.assets[0].uri);
       const uriParts = result.assets[0].uri.split("/");
       const filename = uriParts[uriParts.length - 1];
@@ -110,18 +111,6 @@ const ReservationScreen = () => {
       setPaymentImageName(filename);
       setPaymentImageStatus(true);
     }
-  };
-
-  const handlePayment = () => {
-    // Submit data to the database
-    const formData = {
-      registrantName,
-      applicantName,
-      selectedDate,
-      // Add other data as needed
-    };
-    console.log("Form Data:", formData);
-    // Call your database submission function here
   };
 
   return (
@@ -195,7 +184,7 @@ const ReservationScreen = () => {
                   style={styles.textInput}
                   value={selectedSacrament}
                   onSelect={(index) => {
-                    const selected = sacraments[index - 1].sacrament;
+                    const selected = sacraments[index - 1].id;
                     console.log("Selected Sacrament:", selected);
                     setSelectedSacrament(selected);
                   }}
@@ -408,7 +397,7 @@ const ReservationScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.navigationNext}
-            onPress={async () => {
+            onPress={() => {
               if (page === 3) {
                 const reservationDateTime = `${moment(selectedDateSR).format(
                   "YYYY-MM-DD"
@@ -424,33 +413,51 @@ const ReservationScreen = () => {
                   name: paymentImageName,
                 };
 
-                const formdata = new FormData();
-                formdata.append("user_id", user.id);
-                formdata.append("name_of_applicant", applicantName);
-                formdata.append(
-                  "date_of_birth",
-                  moment(selectedDateDOB).format("LL")
-                );
-                formdata.append("sacrament_id", selectedSacrament);
-                formdata.append("reservation_schedule", reservationDateTime);
-                formdata.append("requirement_images[]", requirementImage);
-                formdata.append("total_price", sacramentFee);
-                formdata.append("payment_image", paymentImage);
-                console.log("Form Data:", formdata);
+                // const formdata = new FormData();
+                // formdata.append("user_id", user.id);
+                // formdata.append("name_of_applicant", applicantName);
+                // formdata.append(
+                //   "date_of_birth",
+                //   moment(selectedDateDOB).format("LL")
+                // );
+                // formdata.append("sacrament", selectedSacrament);
+                // formdata.append("reservation_schedule", reservationDateTime);
+                // formdata.append("requirement_images[]", requirementImage);
+                // formdata.append("total_price", sacramentFee);
+                // formdata.append("payment_image", paymentImage);
+
+                // console.log("Form Data:", formdata);
 
                 api
-                  .post(`reservation/create`, formdata)
+                  .post(`reservation/create`, {
+                    user_id: user.id,
+                    name_of_applicant: applicantName,
+                    date_of_birth: moment(selectedDateDOB).format("LL"),
+                    sacrament: selectedSacrament,
+                    reservation_schedule: reservationDateTime,
+                    // requirement_images: [requirementImage],
+                    total_price: sacramentFee,
+                    // payment_image: paymentImage,
+                  })
                   .then((response) => {
                     console.log(response);
-                    Alert.alert("Success", "Reservation created successfully!");
-                    navigation.navigate("HomeScreen");
                   })
-                  .catch((error) => {
-                    console.log(error);
-                    Alert.alert("Error", "Failed to create reservation");
+                  .catch((err) => {
+                    console.log("errorzz", err.response);
                   });
-              } else if (progress === 1) {
-                Alert.alert("Warning!", "Already at the last page!");
+
+                // try {
+                //   const response = await api.post(
+                //     `reservation/create`,
+                //     formdata
+                //   );
+                //   console.log(response);
+                //   Alert.alert("Success", "Reservation created successfully!");
+                //   navigation.navigate("HomeScreen");
+                // } catch (err) {
+                //   console.log("errorzz", err.response);
+                //   Alert.alert("Error", "Failed to create reservation");
+                // }
               } else {
                 let tempProgress = progress;
                 tempProgress = tempProgress + 0.25;

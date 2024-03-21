@@ -184,6 +184,7 @@ const HomeScreen = () => {
                       }
                       key={index}
                     >
+                      <Text style={styles.subTitle}>Watch Mass Live Here </Text>
                       <View
                         style={{
                           flexDirection: "row",

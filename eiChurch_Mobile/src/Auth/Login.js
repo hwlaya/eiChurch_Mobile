@@ -10,8 +10,8 @@ const Login = () => {
   const user = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState("test_user@gmail.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
@@ -28,7 +28,7 @@ const Login = () => {
         })
         .then((response) => {
           setLoading(false);
-          if(response.data.success) {
+          if (response.data.success) {
             user.user = response.data.user;
             user.token = response.data.token;
             navigation.navigate("Home");
