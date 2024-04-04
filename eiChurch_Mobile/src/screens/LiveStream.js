@@ -20,7 +20,7 @@ const LiveStream = () => {
   useEffect(() => {
     console.log(
       decodeURI(
-        `https://sanroqueparish.com/joinlive?jwt=${token}&room=${room}&reloadKey=${reloadKey}`
+        `https://sanroqueparish.com/livestream?jwt=${token}&room=${room}&reloadKey=${reloadKey}`
       )
     );
   }, [reloadKey]);
@@ -86,14 +86,14 @@ const LiveStream = () => {
         style={{ width: 360, height: "100%" }}
         source={{
           uri: decodeURI(
-            `https://sanroqueparish.com/joinlive?jwt=${token}&room=${room}&reloadKey=${reloadKey}`
+            `https://sanroqueparish.com/livestream?jwt=${token}&room=${room}&reloadKey=${reloadKey}`
           ),
         }}
         onPermissionRequest={handlePermissionRequest}
       />
-      {/* <Button onPress={handleRefresh}>Force Refresh</Button>
-      <Button onPress={handleForceReload}>Force Reload</Button>
-      <Button onPress={handleClearCache}>Clear Cache</Button> */}
+      {/* {<Button onPress={handleRefresh}>Force Refresh</Button> */}
+      {/* <Button onPress={handleForceReload}>Force Reload</Button> */}
+      <Button onPress={handleClearCache}>Clear Cache</Button>
       <Button
         onPress={() => navigation.navigate("HomeScreen")}
         icon={() => <Icon name="arrow-left" size={50} color={"#000"} />}

@@ -440,9 +440,12 @@ const ReservationScreen = () => {
                     // payment_image: paymentImage,
                   })
                   .then((response) => {
+                    Alert.alert("Success", "Reservation created successfully!");
+                    navigation.navigate("HomeScreen");
                     console.log(response);
                   })
                   .catch((err) => {
+                    Alert.alert("Error", "Failed to create reservation");
                     console.log("errorzz", err.response);
                   });
 
