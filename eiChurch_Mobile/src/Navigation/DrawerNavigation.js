@@ -17,6 +17,7 @@ import MissionAndVision from "../screens/MissionAndVision";
 import Prayers from "../screens/Prayers";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import ReservationIndex from "../screens/ReservationIndex";
+import ReservationView from "../screens/ReservationView";
 const DrawerStack = createDrawerNavigator();
 
 const DrawerContent = ({ navigation, state }) => {
@@ -161,6 +162,15 @@ const DrawerNavigation = () => {
         component={CurrentEvents}
         options={{
           headerTitle: "Current Events",
+          headerTitleAlign: "center",
+        }}
+      />
+
+      <DrawerStack.Screen
+        name="ReservationView"
+        component={ReservationView}
+        options={{
+          headerTitle: "View Reservation",
           headerTitleAlign: "center",
         }}
       />
