@@ -18,6 +18,8 @@ import Prayers from "../screens/Prayers";
 import EditProfileScreen from "../screens/EditProfileScreen";
 import ReservationIndex from "../screens/ReservationIndex";
 import ReservationView from "../screens/ReservationView";
+import DonationIndex from "../screens/DonationIndex";
+import DonationCreate from "../screens/DonationCreate";
 const DrawerStack = createDrawerNavigator();
 
 const DrawerContent = ({ navigation, state }) => {
@@ -97,6 +99,12 @@ const DrawerNavigation = () => {
       />
 
       <DrawerStack.Screen
+        name="DonationIndex"
+        component={DonationIndex}
+        options={{ headerTitle: "Donation", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
         options={{ headerTitle: "Edit Profile", headerTitleAlign: "center" }}
@@ -171,6 +179,15 @@ const DrawerNavigation = () => {
         component={ReservationView}
         options={{
           headerTitle: "View Reservation",
+          headerTitleAlign: "center",
+        }}
+      />
+
+      <DrawerStack.Screen
+        name="DonationCreate"
+        component={DonationCreate}
+        options={{
+          headerTitle: "Donate",
           headerTitleAlign: "center",
         }}
       />
