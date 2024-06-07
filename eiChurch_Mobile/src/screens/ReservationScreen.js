@@ -7,9 +7,20 @@ import {
   TouchableOpacity,
   Alert,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { Text, ProgressBar, TextInput, Divider } from "react-native-paper";
-import { Datepicker, Select, SelectItem, Card } from "@ui-kitten/components";
+import {
+  Datepicker,
+  Select,
+  SelectItem,
+  Card,
+  Input,
+  Layout,
+  List,
+  ListItem,
+  Button,
+} from "@ui-kitten/components";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -20,6 +31,8 @@ import * as ImagePicker from "expo-image-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import Header from "../components/Header";
 import api from "../../config/api";
+import CustomListHeader from "../components/ui/CustomListHeader";
+import CustomListItem from "../components/ui/CustomListItem";
 
 const ReservationScreen = () => {
   const navigation = useNavigation();
@@ -35,10 +48,6 @@ const ReservationScreen = () => {
   const [sacraments, setSacraments] = useState([]);
   const [selectedSacrament, setSelectedSacrament] = useState("");
   const [selectedDateSR, setSelectedDateSR] = useState(null);
-  const [selectedTimeSR, setSelectedTimeSR] = useState(null);
-  const [timePickerVisible, setTimePickerVisible] = useState(false);
-
-  const [sacramentFee, setSacramentFee] = useState(0);
 
   const [requirementImageStatus, setRequirementImageStatus] = useState(false);
   const [requirementImageUri, setRequirementImageUri] = useState("");
@@ -49,6 +58,57 @@ const ReservationScreen = () => {
   const [paymentImageName, setPaymentImageName] = useState("");
   const minDateSR = new Date();
   minDateSR.setDate(minDateSR.getDate() + 3);
+
+  const eventTypeList = ["Sacrament", "Service Mass", "Blessing", "Other"];
+  const timeList = [
+    "8:00 AM",
+    "9:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "12:00 PM",
+    "1:00 PM",
+    "2:00 PM",
+    "3:00 PM",
+    "4:00 PM",
+    "5:00 PM",
+  ];
+  const baptismalReqs = [
+    "Registered Birth Certificate (original & photocopy)",
+    "Marriage Certificate (if the parents are married)",
+  ];
+
+  const marriageReqs = [
+    "Baptismal Certificate (both parties)",
+    "Confirmation Certificate (both parties)",
+    "Marriage License",
+    "Copy of the Civil Marriage Certificate",
+  ];
+
+  const communionReqs = [
+    "Photocopy of Baptismal Certificate",
+    "Photocopy of Birth Certificate",
+  ];
+
+  const paymentTypes = [
+    {
+      id: "ovc",
+      title: "Over the counter",
+    },
+    {
+      id: "op",
+      title: "Online Payment",
+    },
+  ];
+  const [selectedEventType, setSelectedEventType] = useState("");
+  const [eventName, setEventName] = useState("");
+  const [eventFacilitator, setEventFacilitator] = useState("");
+  const [eventTime, setEventTime] = useState("");
+  const [sacramentDetails, setSacramentDetails] = useState([]); // store the sacrament from the sacrament field
+  const [availableTime, setAvailableTime] = useState([]);
+  const [selectedRequirementImage, setSelectedRequirementImage] = useState([]);
+  const [selectedPaymentImage, setSelectedPaymentImage] = useState([]);
+  const [paymentType, setPaymentType] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     api
@@ -65,14 +125,37 @@ const ReservationScreen = () => {
   useEffect(() => {
     // Update sacrament fee when selected sacrament changes
     if (selectedSacrament) {
-      const selectedSacramentData = sacraments.find(
-        (sacrament) => sacrament.id === selectedSacrament
+      const sacramentDetails = sacraments.find(
+        (sacrament) => sacrament.sacrament === selectedSacrament
       );
-      if (selectedSacramentData) {
-        setSacramentFee(selectedSacramentData.fee);
-      }
+      setSacramentDetails(sacramentDetails);
     }
-  }, [selectedSacrament, sacraments]);
+  }, [selectedSacrament]);
+
+  useEffect(() => {
+    api
+      .get(`/reservation/getAllReservedTime/`, {
+        params: {
+          date: moment(selectedDateSR).format("YYYY-MM-DD"),
+        },
+      })
+
+      .then((response) => {
+        const reservedTime = response.data.reserved_time;
+
+        console.log(reservedTime);
+        const availableTime = timeList.filter(
+          (time) => !reservedTime.includes(time)
+        );
+        setAvailableTime(availableTime);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    setEventTime("");
+  }, [selectedDateSR]);
+
   const pickRequirementImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -86,6 +169,12 @@ const ReservationScreen = () => {
 
     if (!result.canceled) {
       console.log("result:", result.assets[0]);
+      const image = {
+        uri: result.uri,
+        type: "image/jpeg",
+        name: "image.jpg",
+      };
+      setSelectedRequirementImage(image);
       setRequirementImageUri(result.assets[0].uri);
       const uriParts = result.assets[0].uri.split("/");
       const filename = uriParts[uriParts.length - 1];
@@ -105,6 +194,12 @@ const ReservationScreen = () => {
     console.log(result);
 
     if (!result.canceled) {
+      const image = {
+        uri: result.uri,
+        type: "image/jpeg",
+        name: "image.jpg",
+      };
+      setSelectedPaymentImage(image);
       setPaymentImageUri(result.assets[0].uri);
       const uriParts = result.assets[0].uri.split("/");
       const filename = uriParts[uriParts.length - 1];
@@ -113,237 +208,381 @@ const ReservationScreen = () => {
     }
   };
 
+  const handleSubmit = () => {
+    setLoading(true);
+    const reservationDateTime = `${moment(selectedDateSR).format(
+      "YYYY-MM-DD"
+    )} ${eventTime}`;
+
+    const selectedPayment = paymentType == "Online Payment" ? "op" : "ovc";
+
+    const formdata = new FormData();
+    formdata.append("user_id", user.id);
+    formdata.append("reservation_schedule", reservationDateTime);
+    formdata.append("event_type", selectedEventType);
+
+    if (selectedEventType == "Sacrament") {
+      // sacrament
+      formdata.append("name_of_applicant", applicantName);
+      formdata.append(
+        "date_of_birth",
+        moment(selectedDateDOB).format("YYYY-MM-DD")
+      );
+      formdata.append("sacrament", sacramentDetails.id);
+      // formdata.append("requirement_images[]", requirementImage);
+      formdata.append("mobile_requirement_images", selectedRequirementImage); // will only work if the foreach is not implemented in backend
+      formdata.append("total_price", sacramentDetails.fee);
+    } else {
+      // event
+      formdata.append("event_name", eventName);
+      formdata.append("event_facilitator", eventFacilitator);
+
+      formdata.append("total_price", "100");
+    }
+
+    if (selectedPayment == "op") {
+      formdata.append("payment_image", selectedPaymentImage);
+    }
+
+    formdata.append("payment_type", selectedPayment);
+    console.log("Form Data:", formdata);
+
+    api
+      .post(`reservation/create`, formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        Alert.alert("Success", "Reservation created successfully!");
+        navigation.navigate("ReservationIndex");
+        resetForm();
+        console.log(response);
+      })
+      .catch((err) => {
+        Alert.alert("Error", "Failed to create reservation");
+        console.log("errorzz", err);
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false when submission ends
+      });
+  };
+
+  const handleNext = () => {
+    if (page == 3) {
+      handleSubmit();
+    } else {
+      let tempProgress = progress;
+      tempProgress = tempProgress + 0.25;
+      setPage(page + 1);
+      setProgress(tempProgress);
+    }
+  };
+
+  const handleBack = () => {
+    if (progress === 0.25) {
+      resetForm();
+      navigation.navigate("ReservationIndex");
+    } else {
+      let tempProgress = progress;
+      tempProgress = tempProgress - 0.25;
+      setPage(page - 1);
+      setProgress(tempProgress);
+    }
+  };
+
+  const resetForm = () => {
+    setApplicantName("");
+    setSelectedDateDOB(null);
+    setSelectedSacrament("");
+    setSelectedDateSR(null);
+
+    setRequirementImageStatus(false); // not impo
+    setRequirementImageUri("");
+    setRequirementImageName(""); // not impo
+
+    setPaymentImageStatus(false);
+    setPaymentImageUri("");
+    setPaymentImageName("");
+
+    setSelectedEventType("");
+    setEventName("");
+    setEventFacilitator("");
+    setEventTime("");
+    setSacramentDetails([]);
+
+    setAvailableTime([]);
+    setSelectedRequirementImage([]);
+    setSelectedPaymentImage([]);
+    setPaymentType("");
+
+    setProgress(0.25);
+    setPage(1);
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <Header
+    <View style={styles.container}>
+      {/* <Header
         logoSource={require("../assets/images/church_icon.png")}
         title="eiChurch"
         subtitle="San Roque Parish Church"
+      /> */}
+      <ProgressBar
+        color="blue"
+        animatedValue={progress}
+        style={{ backgroundColor: "#FFF" }}
       />
-      <ImageBackground
-        source={require("../assets/images/background5.jpg")}
-        style={styles.backgroundImage}
-      >
-        <ProgressBar
-          color="blue"
-          animatedValue={progress}
-          style={{ backgroundColor: "#FFF" }}
-        />
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {page === 1 ? (
-            <View style={styles.bodyContainer}>
-              <Text style={styles.title}>Create a Reservation</Text>
-              <Text style={styles.subtitle}>Personal Information</Text>
-              <View />
-              <View style={styles.inputFieldContainer}>
-                <TextInput
-                  style={styles.textInput}
-                  label={"Name of Registrant"}
-                  outlineStyle={{ borderRadius: 10 }}
-                  value={registrantName}
-                  onChangeText={setRegistrantName}
-                  mode="outlined"
-                  editable={false}
-                />
-                <TextInput
-                  style={styles.textInput}
-                  label={"Name of Applicant"}
-                  value={applicantName}
-                  onChangeText={setApplicantName}
-                  outlineStyle={{ borderRadius: 10 }}
-                  mode="outlined"
-                />
-                <Datepicker
-                  label={"Date of Birth"}
-                  placeholder={"Pick Date"}
-                  date={selectedDateDOB}
-                  onSelect={(date) => setSelectedDateDOB(date)}
-                  min={new Date(1900, 0, 1)} // Set min date to January 1, 1900
-                  max={new Date()} // Set max date to today
-                  style={styles.textInput}
-                />
-              </View>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("ProfileScreen")}
-                style={{
-                  position: "absolute",
-                  left: 10,
-                  bottom: -270,
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {page == 1 ? (
+          <View style={{ padding: 5 }}>
+            <Text style={styles.title}>Create a Reservation</Text>
+            <Text style={styles.subtitle}>Event Type</Text>
+            <Select
+              label={"Select Event Type"}
+              style={{ marginBottom: 10 }}
+              value={selectedEventType}
+              onSelect={(index) => {
+                const event = eventTypeList[index.row];
+                console.log("Selected Sacrament:", event);
+                setSelectedEventType(event);
+              }}
+            >
+              {eventTypeList.map((event, index) => (
+                <SelectItem key={index} title={event} />
+              ))}
+            </Select>
+            {selectedEventType == "Sacrament" && (
+              <Select
+                label={"Choose a Sacrament"}
+                value={selectedSacrament}
+                onSelect={(index) => {
+                  const selected = sacraments[index - 1].sacrament;
+                  console.log("Selected Sacrament:", selected);
+                  setSelectedSacrament(selected);
                 }}
               >
-                <Icon name="arrow-left" size={24} color={"#FFF"} />
-              </TouchableOpacity>
-            </View>
-          ) : page === 2 ? (
-            <View style={styles.bodyContainer}>
-              <Text style={styles.title}>Create a Reservation</Text>
-              <Text style={styles.subtitle}>Event Details</Text>
-              <View style={styles.inputFieldContainer}>
-                <Select
-                  label={"Choose a Sacrament"}
-                  style={styles.textInput}
-                  value={selectedSacrament}
-                  onSelect={(index) => {
-                    const selected = sacraments[index - 1].id;
-                    console.log("Selected Sacrament:", selected);
-                    setSelectedSacrament(selected);
-                  }}
-                >
-                  {sacraments.map((sacrament, index) => (
-                    <SelectItem key={index} title={sacrament.sacrament} />
-                  ))}
-                </Select>
-                <Datepicker
-                  label={"Schedule of Reservation"}
-                  placeholder={"Pick Date"}
-                  date={selectedDateSR}
-                  onSelect={(nextDate) => setSelectedDateSR(nextDate)}
-                  min={minDateSR}
-                  style={styles.textInput}
-                />
-                <TouchableOpacity
-                  onPress={() => {
-                    setTimePickerVisible(true);
-                  }}
-                  style={{ marginTop: 10 }}
-                >
-                  <Text
-                    category="label"
-                    appearance="hint"
-                    style={{
-                      fontSize: 13,
-                      fontWeight: "bold",
-                      color: "#9eaaad",
-                    }}
-                  >
-                    Choose a Time
-                  </Text>
-                  <View style={styles.timeInput}>
-                    <Text style={{ fontSize: 16 }}>{selectedTimeSR}</Text>
-                  </View>
-                </TouchableOpacity>
-                {timePickerVisible && (
-                  <DateTimePicker
-                    mode="time"
-                    value={new Date()}
-                    is24Hour={false}
-                    minimumDate={moment().set({ hour: 9, minute: 0 }).toDate()}
-                    maximumDate={moment().set({ hour: 16, minute: 0 }).toDate()}
-                    style={{
-                      width: 500,
-                      opacity: 1,
-                      height: 30,
-                      marginTop: 50,
-                    }}
-                    onChange={(e, date) => {
-                      if (e.type === "set") {
-                        setSelectedTimeSR(moment(date).format("hh:mm A"));
-                        setTimePickerVisible(false);
-                      } else {
-                        setTimePickerVisible(false);
-                      }
-                    }}
+                {sacraments.map((sacrament, index) => (
+                  <SelectItem key={index} title={sacrament.sacrament} />
+                ))}
+              </Select>
+            )}
+          </View>
+        ) : page === 2 ? (
+          <View style={{ padding: 5 }}>
+            <Text style={styles.title}>Create a Reservation</Text>
+            <Text style={styles.subtitle}>Event Details</Text>
+            <View>
+              {selectedEventType == "Sacrament" ? (
+                <>
+                  <Input
+                    label={"Name of Applicant"}
+                    value={applicantName}
+                    onChangeText={setApplicantName}
+                    style={{ marginBottom: 10 }}
                   />
-                )}
-                <View style={styles.uploadPhotoContainer}>
-                  <Text
-                    category="label"
-                    appearance="hint"
-                    style={styles.requirementText}
-                  >
-                    Attach the Requirements
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.uploadPhotoPlaceholder}
-                    onPress={pickRequirementImage}
-                  >
-                    <>
-                      <MaterialIcons
-                        name="cloud-upload"
-                        size={30}
-                        color="white"
-                      />
-                      <Text variant="bodySmall" style={{ color: "#aeaeae" }}>
-                        UPLOAD FILE
+                  <Datepicker
+                    label={"Date of Birth"}
+                    date={selectedDateDOB}
+                    onSelect={(date) => setSelectedDateDOB(date)}
+                    min={new Date(1900, 0, 1)} // Set min date to January 1, 1900
+                    max={new Date()} // Set max date to today
+                    style={{ width: "100%", marginBottom: 10 }}
+                  />
+                </>
+              ) : (
+                <>
+                  <Input
+                    label={"Name of Event"}
+                    value={eventName}
+                    onChangeText={setEventName}
+                    style={{ marginBottom: 10 }}
+                  />
+                  <Input
+                    label={"Event Facilitator"}
+                    value={eventFacilitator}
+                    onChangeText={setEventFacilitator}
+                    style={{ marginBottom: 10 }}
+                  />
+                </>
+              )}
+              <Datepicker
+                label={"Schedule of Reservation"}
+                date={selectedDateSR}
+                onSelect={(nextDate) => {
+                  console.log(`Schedule of Reservation: ${nextDate}`);
+                  setSelectedDateSR(nextDate);
+                }}
+                min={minDateSR}
+                style={{ width: "100%", marginBottom: 10 }}
+              />
+              <Select
+                label={"Time of Reservation"}
+                value={eventTime}
+                onSelect={(index) => {
+                  const selected = availableTime[index - 1];
+                  console.log("Selected Time:", selected);
+                  setEventTime(selected);
+                }}
+                style={{ marginBottom: 10 }}
+              >
+                {availableTime.map((time, index) => (
+                  <SelectItem key={index} title={time} />
+                ))}
+              </Select>
+              <Select
+                label={"Payment Type"}
+                value={paymentType}
+                onSelect={(index) => {
+                  const selected = paymentTypes[index - 1].title;
+                  setPaymentType(selected);
+                  console.log("Selected Time:", selected);
+                }}
+                style={{ marginBottom: 10 }}
+              >
+                {paymentTypes.map((payment, index) => (
+                  <SelectItem key={index} title={payment.title} />
+                ))}
+              </Select>
+              {selectedEventType == "Sacrament" && (
+                <>
+                  {selectedSacrament == "Baptism" && (
+                    <View style={styles.cardBox}>
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        Baptismal Requirements
                       </Text>
-                    </>
-                  </TouchableOpacity>
-                  {requirementImageUri && (
-                    <Image
-                      source={{ uri: requirementImageUri }}
-                      style={{ width: 360, height: 400 }}
-                    />
+                      {baptismalReqs.map((reqs, index) => (
+                        <Text key={index} style={{ marginLeft: 1 }}>
+                          - {reqs}
+                        </Text>
+                      ))}
+                    </View>
                   )}
-                </View>
-              </View>
-            </View>
-          ) : (
-            <View style={styles.bodyContainer}>
-              <Text style={styles.title}>Create a Reservation</Text>
-              <Text style={styles.subtitle}>Reservation Summary</Text>
-              {/* <View style={styles.cardContainer}> */}
-              <Card style={styles.card}>
-                <View style={styles.cardContainer}>
-                  {/* Personal Details */}
-                  <Text style={styles.cardText}>Personal Details</Text>
-                  <Divider style={styles.divider} />
-                  <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}>Name of Registrant</Text>
-                    <Text style={styles.detail2Text}>{registrantName}</Text>
-                  </View>
-                  <Divider style={styles.dividerDetails} />
-                  <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}>Name of Applicant</Text>
-                    <Text style={styles.detail2Text}>{applicantName}</Text>
-                  </View>
-                  <Divider style={styles.dividerDetails} />
-                  <View style={styles.detailContainer}>
-                    <Text style={styles.detailDOBText}> Date of Birth</Text>
-                    <Text style={styles.detail2Text}>
-                      {moment(selectedDateDOB).format("LL").toString()}
-                    </Text>
-                  </View>
-                  <Divider style={styles.dividerDetails} />
-                  {/* Event Details */}
-                  <Text style={styles.cardText}>Event Details</Text>
-                  <Divider style={styles.divider} />
-                  <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}>Reserved Sacrament</Text>
-                    <Text style={styles.detail2Text}>{selectedSacrament}</Text>
-                  </View>
-                  <Divider style={styles.dividerDetails} />
-                  <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}>Date of Reservation</Text>
-                    <Text style={styles.detail2Text}>
-                      {moment(selectedDateSR).format("LL").toString()}
-                    </Text>
-                  </View>
-                  <Divider style={styles.dividerDetails} />
-                  <View style={styles.detailContainer}>
-                    <Text style={styles.detailText}> Time of Reservation</Text>
-                    <Text style={styles.detail2Text}>{selectedTimeSR}</Text>
-                  </View>
-                  <Divider style={styles.dividerDetails} />
-                  <Text style={styles.detailText}> Requirements</Text>
-                  <Text style={styles.detail2Text}>
-                    {" "}
-                    {requirementImageUri ? (
-                      <Text style={styles.detail2Text}>
-                        {requirementImageName}
+
+                  {selectedSacrament == "Communion" && (
+                    <View style={styles.cardBox}>
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        Communion Requirements
                       </Text>
-                    ) : (
-                      <Text style={styles.detail2Text}>No image selected</Text>
+                      {communionReqs.map((reqs, index) => (
+                        <Text key={index} style={{ marginLeft: 1 }}>
+                          - {reqs}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  {selectedSacrament == "Matrimony" && (
+                    <View style={styles.cardBox}>
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        Marriage Requirements
+                      </Text>
+                      {marriageReqs.map((reqs, index) => (
+                        <Text key={index} style={{ marginLeft: 1 }}>
+                          - {reqs}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  <View>
+                    <Text
+                      category="label"
+                      appearance="hint"
+                      style={styles.requirementText}
+                    >
+                      Attach the Requirements
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.uploadPhotoPlaceholder}
+                      onPress={pickRequirementImage}
+                    >
+                      <>
+                        <MaterialIcons
+                          name="cloud-upload"
+                          size={30}
+                          color="white"
+                        />
+                        <Text variant="bodySmall" style={{ color: "#aeaeae" }}>
+                          UPLOAD FILE
+                        </Text>
+                      </>
+                    </TouchableOpacity>
+                    {requirementImageUri && (
+                      <Image
+                        source={{ uri: requirementImageUri }}
+                        style={{ height: 400, marginTop: 10 }}
+                      />
                     )}
-                  </Text>
-                  <Divider style={styles.dividerDetails} />
-                  {/* Payment Details */}
-                  <Text style={styles.cardText}>Payment Details</Text>
-                  <Divider style={styles.divider} />
-                  <Text style={styles.detailText}> Fee</Text>
-                  <Text style={styles.detail2Text}>₱ {sacramentFee}</Text>
-                  <Divider style={styles.dividerDetails} />
-                </View>
-              </Card>
+                  </View>
+                </>
+              )}
+            </View>
+          </View>
+        ) : (
+          <View style={styles.bodyContainer}>
+            <Text style={styles.title}>Create a Reservation</Text>
+            <Text style={styles.subtitle}>Reservation Summary</Text>
+
+            <View
+              style={{
+                width: "100%",
+                padding: 10,
+                borderWidth: 0.4,
+                borderColor: "#ccc",
+              }}
+            >
+              <CustomListHeader title="Personal Information" />
+              <CustomListItem
+                title="Name of Registrant"
+                value={registrantName}
+              />
+              {selectedEventType == "Sacrament" && (
+                <>
+                  <CustomListItem
+                    title="Name of Applicant"
+                    value={applicantName}
+                  />
+                  <CustomListItem
+                    title="Date of Birth"
+                    value={moment(selectedDateDOB).format("LL")}
+                  />
+                </>
+              )}
+
+              <CustomListHeader title="Event Details" />
+              <CustomListItem
+                title="Date of Reservation"
+                value={moment(selectedDateSR).format("LL")}
+              />
+              <CustomListItem title="Time of Reservation" value={eventTime} />
+              {selectedEventType == "Sacrament" ? (
+                <>
+                  <CustomListItem
+                    title="Reserved Sacrament"
+                    value={sacramentDetails.sacrament}
+                  />
+                </>
+              ) : (
+                <>
+                  <CustomListItem title="Event Name" value={eventName} />
+                  <CustomListItem
+                    title="Event Facilitator"
+                    value={eventFacilitator}
+                  />
+                </>
+              )}
+
+              <CustomListHeader title="Payment Details" />
+              <CustomListItem
+                title="Fee"
+                value={
+                  selectedEventType == "Sacrament"
+                    ? sacramentDetails.fee
+                    : "100"
+                }
+              />
+            </View>
+            {paymentType == "Online Payment" && (
               <View style={styles.uploadPhotoContainer}>
                 <Text
                   category="label"
@@ -370,122 +609,35 @@ const ReservationScreen = () => {
                 {paymentImageUri && (
                   <Image
                     source={{ uri: paymentImageUri }}
-                    style={{ width: 300, height: 500 }}
+                    style={{ width: 300, height: 500, marginTop: 10 }}
                   />
                 )}
               </View>
-            </View>
-          )}
-        </ScrollView>
+            )}
+          </View>
+        )}
         {/* BUTTON NAVIGATOR */}
-        <View style={styles.buttonNavigatorContainer}>
-          <TouchableOpacity
-            style={styles.navigationBack}
-            onPress={() => {
-              if (progress === 0.25) {
-                Alert.alert("Warning!", "Already at the first page!");
-              } else {
-                let tempProgress = progress;
-                tempProgress = tempProgress - 0.25;
-                setPage(page - 1);
-                setProgress(tempProgress);
-              }
-            }}
-          >
-            <Icon name="chevron-left" size={20} color={"#fff"} />
-            <Text style={{ color: "#fff" }}>Back</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.navigationNext}
-            onPress={() => {
-              if (page === 3) {
-                const reservationDateTime = `${moment(selectedDateSR).format(
-                  "YYYY-MM-DD"
-                )} ${selectedTimeSR}`;
-                let requirementImage = {
-                  uri: requirementImageUri,
-                  type: "multipart/form-data",
-                  name: requirementImageName,
-                };
-                let paymentImage = {
-                  uri: paymentImageUri,
-                  type: "multipart/form-data",
-                  name: paymentImageName,
-                };
-
-                // const formdata = new FormData();
-                // formdata.append("user_id", user.id);
-                // formdata.append("name_of_applicant", applicantName);
-                // formdata.append(
-                //   "date_of_birth",
-                //   moment(selectedDateDOB).format("LL")
-                // );
-                // formdata.append("sacrament", selectedSacrament);
-                // formdata.append("reservation_schedule", reservationDateTime);
-                // formdata.append("requirement_images[]", requirementImage);
-                // formdata.append("total_price", sacramentFee);
-                // formdata.append("payment_image", paymentImage);
-
-                // console.log("Form Data:", formdata);
-
-                api
-                  .post(`reservation/create`, {
-                    user_id: user.id,
-                    name_of_applicant: applicantName,
-                    date_of_birth: moment(selectedDateDOB).format("LL"),
-                    sacrament: selectedSacrament,
-                    reservation_schedule: reservationDateTime,
-                    // requirement_images: [requirementImage],
-                    total_price: sacramentFee,
-                    // payment_image: paymentImage,
-                  })
-                  .then((response) => {
-                    Alert.alert("Success", "Reservation created successfully!");
-                    navigation.navigate("HomeScreen");
-                    console.log(response);
-                  })
-                  .catch((err) => {
-                    Alert.alert("Error", "Failed to create reservation");
-                    console.log("errorzz", err.response);
-                  });
-
-                // try {
-                //   const response = await api.post(
-                //     `reservation/create`,
-                //     formdata
-                //   );
-                //   console.log(response);
-                //   Alert.alert("Success", "Reservation created successfully!");
-                //   navigation.navigate("HomeScreen");
-                // } catch (err) {
-                //   console.log("errorzz", err.response);
-                //   Alert.alert("Error", "Failed to create reservation");
-                // }
-              } else {
-                let tempProgress = progress;
-                tempProgress = tempProgress + 0.25;
-                setPage(page + 1);
-                setProgress(tempProgress);
-              }
-
-              if (page === 1) {
-                let date = moment(selectedDateSR).format("YYYY-MM-DD");
-
-                const time = moment(selectedTimeSR, "hh:mm A").format(
-                  "hh:mm:ss"
-                );
-                const datetime = `${date}T${time}`; //ISO
-              }
-            }}
-          >
-            <Text style={{ color: "#fff" }}>
-              {page == 3 ? "Submit" : "Next"}
-            </Text>
-            <Icon name="chevron-right" size={20} color={"#fff"} />
-          </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 5,
+            marginTop: 10,
+          }}
+        >
+          <Button appearance="outline" status="basic" onPress={handleBack}>
+            Back
+          </Button>
+          <Button onPress={handleNext}>{page == 3 ? "Submit" : "Next"}</Button>
         </View>
-      </ImageBackground>
-    </SafeAreaView>
+      </ScrollView>
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -507,15 +659,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "Montserrat-Medium",
-    fontSize: 32,
+    fontSize: 20,
     alignSelf: "flex-start",
   },
   subtitle: {
-    marginBottom: 8,
+    marginBottom: 20,
     fontFamily: "Montserrat-Light",
     fontSize: 16,
     alignSelf: "flex-start",
-    paddingHorizontal: 20,
   },
   inputFieldContainer: {
     justifyContent: "space-between",
@@ -537,11 +688,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "bold",
     color: "#9eaaad",
-    textAlign: "left",
-    alignSelf: "flex-start",
   },
   uploadPhotoPlaceholder: {
-    margin: 20,
+    // margin: 20,
+    marginTop: 5,
     borderWidth: 1,
     height: 50,
     width: 330,
@@ -641,6 +791,24 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
+  },
+  cardBox: {
+    marginTop: 10,
+    backgroundColor: "#EAF1FE",
+    padding: 10,
+    borderTopWidth: 5,
+    borderTopColor: "#3366FF",
+    marginBottom: 10,
+  },
+  loadingOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
   },
 });
 

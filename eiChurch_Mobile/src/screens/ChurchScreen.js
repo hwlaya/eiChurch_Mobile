@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ScrollView, ImageBackground } from "react-native";
+import { StyleSheet, ScrollView, ImageBackground, View } from "react-native";
 import { Card } from "@ui-kitten/components";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,12 +10,12 @@ const ChurchScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header
+    <View style={styles.container}>
+      {/* <Header
         logoSource={require("../assets/images/church_icon.png")}
         title="eiChurch"
         subtitle="San Roque Parish Church"
-      />
+      /> */}
       <ImageBackground
         source={require("../assets/images/background5.jpg")} // Specify the path to your background image
         style={styles.backgroundImage}
@@ -77,14 +77,14 @@ const ChurchScreen = () => {
           </Card>
         </ScrollView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    // backgroundColor: "white",
   },
   backgroundImage: {
     flex: 1,

@@ -10,8 +10,8 @@ const Login = () => {
   const user = useContext(UserContext);
   const navigation = useNavigation();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("test_user@gmail.com");
+  const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
@@ -31,7 +31,7 @@ const Login = () => {
           if (response.data.success) {
             user.user = response.data.user;
             user.token = response.data.token;
-            navigation.navigate("Home");
+            navigation.navigate("DrawerStack");
           } else {
             Alert.alert("Error!", "Invalid credentials. Please try again.");
           }
