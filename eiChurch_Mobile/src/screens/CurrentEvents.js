@@ -30,7 +30,20 @@ const CurrentEvents = () => {
       .catch((err) => {
         console.log(err.response);
       });
-  }, []);
+
+    const unsubscribe = navigation.addListener("focus", () => {
+      api
+        .get(`announcement/all`)
+        .then((response) => {
+          setAnnouncements(response.data.announcements);
+        })
+        .catch((err) => {
+          console.log(err.response);
+        });
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>

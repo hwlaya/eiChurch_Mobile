@@ -13,17 +13,18 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Header from "../components/Header";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
+import CustomBackButton from "../components/ui/CustomBackButton";
 
 const MembersOfTheChurch = () => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header
+    <View style={styles.container}>
+      {/* <Header
         logoSource={require("../assets/images/church_icon.png")}
         title="eiChurch"
         subtitle="San Roque Parish Church"
-      />
+      /> */}
       <ImageBackground
         source={require("../assets/images/background5.jpg")} // Specify the path to your background image
         style={styles.backgroundImage}
@@ -78,12 +79,13 @@ const MembersOfTheChurch = () => {
               <Text style={styles.newsCaption}>Lead Pastor</Text>
             </Card>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
+          {/* <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
             <Icon name="arrow-left" size={50} color={"#000"} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <CustomBackButton route="ChurchScreen" />
         </ScrollView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 

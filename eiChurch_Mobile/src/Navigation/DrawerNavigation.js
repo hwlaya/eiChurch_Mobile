@@ -20,6 +20,7 @@ import ReservationIndex from "../screens/ReservationIndex";
 import ReservationView from "../screens/ReservationView";
 import DonationIndex from "../screens/DonationIndex";
 import DonationCreate from "../screens/DonationCreate";
+import AccomplishmentView from "../screens/AccomplishmentView";
 const DrawerStack = createDrawerNavigator();
 
 const DrawerContent = ({ navigation, state }) => {
@@ -36,7 +37,7 @@ const DrawerContent = ({ navigation, state }) => {
     >
       <DrawerItem title={`Home`} />
       <DrawerItem title={`About Us`} />
-      <DrawerItem title={`Events`} />
+      <DrawerItem title={`Announcements`} />
       <DrawerItem title={`Explore`} />
       <DrawerItem title={`Reservation`} />
       <DrawerItem title={`Donate`} />
@@ -188,6 +189,15 @@ const DrawerNavigation = () => {
         component={DonationCreate}
         options={{
           headerTitle: "Donate",
+          headerTitleAlign: "center",
+        }}
+      />
+
+      <DrawerStack.Screen
+        name="AccomplishmentView"
+        component={AccomplishmentView}
+        options={{
+          headerTitle: "View Accomplishment",
           headerTitleAlign: "center",
         }}
       />

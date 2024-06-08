@@ -13,17 +13,18 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Header from "../components/Header";
 import { useNavigation } from "@react-navigation/native";
+import CustomBackButton from "../components/ui/CustomBackButton";
 
 const ChurchHistory = () => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header
+    <View style={styles.container}>
+      {/* <Header
         logoSource={require("../assets/images/church_icon.png")}
         title="eiChurch"
         subtitle="San Roque Parish Church"
-      />
+      /> */}
       <ImageBackground
         source={require("../assets/images/background5.jpg")} // Specify the path to your background image
         style={styles.backgroundImage}
@@ -50,12 +51,13 @@ const ChurchHistory = () => {
               </Text>
             </View>
           </Card>
-          <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
+          <CustomBackButton route="ChurchScreen" />
+          {/* <TouchableOpacity onPress={() => navigation.navigate("ChurchScreen")}>
             <Icon name="arrow-left" size={50} color={"#000"} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </ScrollView>
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 };
 
