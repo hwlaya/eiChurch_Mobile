@@ -13,15 +13,13 @@ import { Button, Card, Input } from "@ui-kitten/components";
 import { useEffect, useState } from "react";
 import api from "../../config/api";
 import * as ImagePicker from "expo-image-picker";
+import { FILE_PATH } from "../../config/directory";
 
 const DonationCreate = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { id } = route.params;
   const [donation, setDonation] = useState(null);
-  const DEV_URL = "http://192.168.68.115:8000/images/donations";
-  const PROD_URL =
-    "https://sanroqueparish.com/DataSonicCapstone-main/public/images/donations";
   const [donationFee, setDonationFee] = useState("");
   const [donationPayment, setDonationPayment] = useState([]);
   const [donationPaymentUri, setDonationPaymentUri] = useState("");
@@ -169,9 +167,11 @@ const DonationCreate = () => {
           {donation ? (
             <>
               <View>
-                <View style={{ height: 200 }}>
+                <View style={{ height: 200, marginBottom: 20 }}>
                   <Image
-                    source={{ uri: `${DEV_URL}/${donation.donation_image}` }}
+                    source={{
+                      uri: `${FILE_PATH}/donations/${donation.donation_image}`,
+                    }}
                     style={{ flex: 1, resizeMode: "contain" }}
                   />
                 </View>

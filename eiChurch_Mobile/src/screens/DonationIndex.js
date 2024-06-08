@@ -13,15 +13,13 @@ import {
 import api from "../../config/api";
 import { UserContext } from "../providers/UserProvider";
 import moment from "moment";
+import { FILE_PATH } from "../../config/directory";
 
 const DonationIndex = () => {
   const [donations, setDonations] = useState([]);
   const navigation = useNavigation();
   const { user } = useContext(UserContext);
   const [refreshing, setRefreshing] = useState(false); // State variable for refreshing
-  const DEV_URL = "http://192.168.68.115:8000/images/donations";
-  const PROD_URL =
-    "https://sanroqueparish.com/DataSonicCapstone-main/public/images/donations";
 
   const fetchDonations = async () => {
     try {
@@ -67,9 +65,11 @@ const DonationIndex = () => {
           {donations.map((data, index) => (
             <View style={{ marginBottom: 20 }} key={index}>
               <Card>
-                <View style={{ height: 200 }}>
+                <View style={{ height: 200, marginBottom: 20 }}>
                   <Image
-                    source={{ uri: `${DEV_URL}/${data.donation_image}` }}
+                    source={{
+                      uri: `${FILE_PATH}/donations/${data.donation_image}`,
+                    }}
                     style={{ flex: 1, resizeMode: "contain" }}
                   />
                 </View>
