@@ -21,6 +21,7 @@ import ReservationView from "../screens/ReservationView";
 import DonationIndex from "../screens/DonationIndex";
 import DonationCreate from "../screens/DonationCreate";
 import AccomplishmentView from "../screens/AccomplishmentView";
+import ChurchNewsAndUpdatesView from "../screens/ChurchNewsAndUpdatesView";
 const DrawerStack = createDrawerNavigator();
 
 const DrawerContent = ({ navigation, state }) => {
@@ -90,7 +91,7 @@ const DrawerNavigation = () => {
       <DrawerStack.Screen
         name="ChurchNewsAndUpdates"
         component={ChurchNewsAndUpdates}
-        options={{ headerTitle: "Current Events", headerTitleAlign: "center" }}
+        options={{ headerTitle: "Announcements", headerTitleAlign: "center" }}
       />
       <DrawerStack.Screen name="Prayers" component={Prayers} />
       <DrawerStack.Screen
@@ -198,6 +199,14 @@ const DrawerNavigation = () => {
         component={AccomplishmentView}
         options={{
           headerTitle: "View Accomplishment",
+          headerTitleAlign: "center",
+        }}
+      />
+      <DrawerStack.Screen
+        name="ChurchNewsAndUpdatesView"
+        component={ChurchNewsAndUpdatesView}
+        options={{
+          headerTitle: "View Announcement",
           headerTitleAlign: "center",
         }}
       />
