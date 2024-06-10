@@ -89,6 +89,7 @@ const Accomplishments = () => {
                         {data.accomplishment_title}
                       </Text>
                       <Button
+                        size="small"
                         onPress={() => {
                           navigation.navigate("AccomplishmentView", {
                             id: data.id,

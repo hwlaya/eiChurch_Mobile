@@ -22,6 +22,11 @@ import DonationIndex from "../screens/DonationIndex";
 import DonationCreate from "../screens/DonationCreate";
 import AccomplishmentView from "../screens/AccomplishmentView";
 import ChurchNewsAndUpdatesView from "../screens/ChurchNewsAndUpdatesView";
+import ExplorePage from "../screens/ExplorePage";
+import ExploreGalleryPage from "../screens/ExploreGalleryPage";
+import ExploreGalleryPageView from "../screens/ExploreGalleryPageView";
+import ExploreRosary from "../screens/ExploreRosary";
+
 const DrawerStack = createDrawerNavigator();
 
 const DrawerContent = ({ navigation, state }) => {
@@ -93,7 +98,13 @@ const DrawerNavigation = () => {
         component={ChurchNewsAndUpdates}
         options={{ headerTitle: "Announcements", headerTitleAlign: "center" }}
       />
-      <DrawerStack.Screen name="Prayers" component={Prayers} />
+
+      <DrawerStack.Screen
+        name="ExplorePage"
+        component={ExplorePage}
+        options={{ headerTitle: "Explore", headerTitleAlign: "center" }}
+      />
+
       <DrawerStack.Screen
         name="ReservationIndex"
         component={ReservationIndex}
@@ -116,6 +127,31 @@ const DrawerNavigation = () => {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{ headerTitle: "Profile", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen name="Prayers" component={Prayers} />
+      <DrawerStack.Screen
+        name="ExploreGalleryPage"
+        component={ExploreGalleryPage}
+        options={{ headerTitle: "Gallery", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen
+        name="ExploreGalleryPageView"
+        component={ExploreGalleryPageView}
+        options={{ headerTitle: "View Gallery", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen
+        name="ExploreRosary"
+        component={ExploreRosary}
+        options={{ headerTitle: "Rosary", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen
+        name="LiveStream"
+        component={LiveStream}
+        options={{ headerTitle: "Rosary", headerTitleAlign: "center" }}
       />
 
       <DrawerStack.Screen
