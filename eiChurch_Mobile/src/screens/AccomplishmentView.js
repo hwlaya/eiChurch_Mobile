@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import api from "../../config/api";
 import { Card } from "@ui-kitten/components";
 import { FILE_PATH } from "../../config/directory";
+import { ScrollView } from "react-native-gesture-handler";
 
 const AccomplishmentView = () => {
   const navigation = useNavigation();
@@ -46,37 +47,42 @@ const AccomplishmentView = () => {
   }, [navigation, id]);
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Card>
-        {accomplishment ? (
-          <>
-            <View style={{ height: 200, marginBottom: 20 }}>
-              <Image
-                source={{
-                  uri: `${FILE_PATH}/accomplishments/${accomplishment.accomplishment_image}`,
-                }}
-                style={{ flex: 1, resizeMode: "contain" }}
-              />
-            </View>
+    <ScrollView>
+      <View style={{ flex: 1, padding: 20 }}>
+        <Card>
+          {accomplishment ? (
+            <>
+              <View style={{ height: 200, marginBottom: 20 }}>
+                <Image
+                  source={{
+                    uri: `${FILE_PATH}/accomplishments/${accomplishment.accomplishment_image}`,
+                  }}
+                  style={{
+                    flex: 1,
+                    resizeMode: "contain",
+                  }}
+                />
+              </View>
 
-            <View style={{ marginBottom: 20 }}>
-              <Text
-                variant="headlineMedium"
-                style={{ marginBottom: 10, textAlign: "center" }}
-              >
-                {accomplishment.accomplishment_title}
-              </Text>
-              <Text variant="bodyLarge" style={{ textAlign: "justify" }}>
-                {accomplishment.accomplishment_content}
-              </Text>
-            </View>
-          </>
-        ) : (
-          <Text>No accomplishment details available.</Text>
-        )}
-      </Card>
-      <CustomBackButton route="Accomplishments" />
-    </View>
+              <View style={{ marginBottom: 20 }}>
+                <Text
+                  variant="headlineMedium"
+                  style={{ marginBottom: 10, textAlign: "center" }}
+                >
+                  {accomplishment.accomplishment_title}
+                </Text>
+                <Text variant="bodyLarge" style={{ textAlign: "justify" }}>
+                  {accomplishment.accomplishment_content}
+                </Text>
+              </View>
+            </>
+          ) : (
+            <Text>No accomplishment details available.</Text>
+          )}
+        </Card>
+        <CustomBackButton route="Accomplishments" />
+      </View>
+    </ScrollView>
   );
 };
 
