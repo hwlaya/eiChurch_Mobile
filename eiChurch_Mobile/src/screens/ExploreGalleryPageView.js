@@ -54,9 +54,10 @@ const ExploreGalleryPageView = () => {
                   <View style={{ height: 200, marginBottom: 10 }}>
                     <Image
                       source={{
-                        uri: `${FILE_PATH}/gallery/${data.id}/images/${data.filename}`,
+                        uri: `${FILE_PATH}/gallery/${data.pivot.gallery_id}/images/${data.filename}`,
                       }}
                       style={{ flex: 1, resizeMode: "contain" }}
+                      onError={(error) => console.error(error.onError)}
                     />
                   </View>
                 </Card>
