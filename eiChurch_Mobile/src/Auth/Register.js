@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Alert } from "react-native";
 import { Input, Button } from "@ui-kitten/components";
 import { Text } from "react-native-paper";
@@ -19,30 +19,77 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
-  const handleRegister = () => {
-    api
-      .post("register", {
-        first_name: firstName,
-        middle_name: middleName,
-        last_name: lastName,
-        email: email,
-        username: username,
-        password: password,
-        password_confirmation: confirmPassword,
-      })
+  const [checkEmail, setCheckEmail] = useState(false);
+  const [checkUsername, setCheckUsername] = useState(false);
 
-      .then((response) => {
-        console.log(response);
-        setLoading(true);
-        Alert.alert("Success", "Registration successful!");
-      })
-      .catch((err) => {
-        // setLoading(false);
-        console.log(err.response);
-      });
-    // Add your registration logic here
-    console.log("Register button pressed");
-    navigation.navigate("Login");
+  useEffect(() => {
+    api.get("users/all").then((response) => {
+      const users = response.data.allUsers;
+      const existingEmail = users.filter(
+        (user) => user.email == email.trim().toLowerCase()
+      );
+      const existingUsername = users.filter(
+        (user) => user.username == username.trim().toLowerCase()
+      );
+      console.log(existingEmail.length);
+      console.log(existingUsername.length);
+      if (existingEmail.length != 0) {
+        setCheckEmail(true);
+      } else {
+        setCheckEmail(false);
+      }
+      if (existingUsername.length != 0) {
+        setCheckUsername(true);
+      } else {
+        setCheckUsername(false);
+      }
+    });
+  }, [email, username]);
+
+  const handleRegister = () => {
+    if (
+      firstName == "" ||
+      lastName == "" ||
+      email == "" ||
+      username == "" ||
+      password == "" ||
+      confirmPassword == ""
+    ) {
+      Alert.alert("Error!", "Please fill out the fields!");
+    } else if (checkUsername) {
+      Alert.alert("Error!", "The username has already been taken.");
+    } else if (checkEmail) {
+      Alert.alert("Error!", "The email has already been taken.");
+    } else if (password.trim().length < 8) {
+      Alert.alert("Error!", "The password must be at least 8 characters.");
+    } else if (password != confirmPassword) {
+      Alert.alert(
+        "Error!",
+        "The password confirmation and password must match."
+      );
+    } else {
+      setLoading(true);
+      api
+        .post("register", {
+          first_name: firstName,
+          middle_name: middleName,
+          last_name: lastName,
+          email: email,
+          username: username,
+          password: password,
+          password_confirmation: confirmPassword,
+        })
+        .then((response) => {
+          console.log(response);
+          setLoading(false);
+          Alert.alert("Success", "Registration successful!");
+          navigation.navigate("Login");
+        })
+        .catch((err) => {
+          // setLoading(false);
+          console.log(err.response);
+        });
+    }
   };
 
   const togglePasswordVisibility = () => {

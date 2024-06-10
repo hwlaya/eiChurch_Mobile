@@ -1,10 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { Button, Input } from "@ui-kitten/components";
 import { Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../providers/UserProvider";
 import api from "../../config/api";
+import Loading from "../components/Loading";
 
 const Login = () => {
   const user = useContext(UserContext);
@@ -13,13 +14,28 @@ const Login = () => {
   const [email, setEmail] = useState("test_user@gmail.com");
   const [password, setPassword] = useState("password");
   const [loading, setLoading] = useState(false);
+  const [checkEmailVerify, setCheckEmailVerify] = useState(false);
+
+  // // todo: refresh the states when redirected to this screen
+  // useEffect(() => {
+  //   api.get("users/all").then((response) => {
+  //     const users = response.data.allUsers;
+  //     const user = users.filter((user) => user.email == email);
+  //     console.log(`eto yung logged in user`);
+  //     console.log(user[0]);
+  //     if (user[0].email_verified_at == null) {
+  //       setCheckEmailVerify(true);
+  //     } else {
+  //       setCheckEmailVerify(false);
+  //     }
+  //   });
+  // }, [email]);
 
   const handleLogin = () => {
-    setLoading(true);
     if (email === "" || password === "") {
       Alert.alert("Error!", "Please input your credentials!");
-      setLoading(false);
     } else {
+      setLoading(true);
       api
         .post("login", {
           email: email,
@@ -50,6 +66,8 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      <Loading loading={loading} />
+
       <Image
         source={require("../assets/images/SanRoque_Logo.png")}
         style={styles.logo}
