@@ -16,31 +16,39 @@ import moment from "moment";
 const ReservationIndex = () => {
   const navigation = useNavigation();
   const { user } = useContext(UserContext);
-  const [reservations, setReservations] = useState([]);
-  const [refreshing, setRefreshing] = useState(false); // State variable for refreshing
+  const [reservations, setReservations] = useState(null);
 
-  const fetchReservations = async () => {
-    try {
-      setRefreshing(true); // Set refreshing to true when fetching data
-      const response = await api.get(`reservation/all`);
-      const reservations = response.data.reservations;
-      const userReservations = reservations.filter(
-        (reservation) => reservation.user_id.id == user.id
-      );
-      setReservations(userReservations);
-    } catch (error) {
-      console.error("Error fetching reservations:", error);
-    } finally {
-      setRefreshing(false); // Set refreshing to false when data fetching is done
-    }
-  };
+  useEffect(() => {
+    api
+      .get("reservation/all")
+      .then((response) => {
+        const reservations = response.data.reservations;
+        const userReservations = reservations.filter(
+          (reservation) => reservation.user_id.id == user.id
+        );
+        setReservations(userReservations);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
-  useFocusEffect(
-    useCallback(() => {
-      // Fetch reservations when screen gains focus
-      fetchReservations();
-    }, [])
-  );
+    const unsubscribe = navigation.addListener("focus", () => {
+      api
+        .get("reservation/all")
+        .then((response) => {
+          const reservations = response.data.reservations;
+          const userReservations = reservations.filter(
+            (reservation) => reservation.user_id.id == user.id
+          );
+          setReservations(userReservations);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+
+    return unsubscribe;
+  }, [navigation, user]);
 
   return (
     <ScrollView>
@@ -64,66 +72,70 @@ const ReservationIndex = () => {
         </View>
 
         <View style={{ marginTop: 30 }}>
-          {refreshing && (
-            <ActivityIndicator size={"small"} style={{ marginBottom: 10 }} />
+          {reservations ? (
+            <>
+              {reservations.map((data, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() =>
+                    navigation.navigate("ReservationView", { id: data.id })
+                  }
+                >
+                  <View style={styles.card}>
+                    <Text style={styles.title}>
+                      Event Type:
+                      <Text style={styles.subtitle}> {data.event_type}</Text>
+                    </Text>
+
+                    <Text style={styles.title}>
+                      Schedule:
+                      <Text style={styles.subtitle}>
+                        {" "}
+                        {moment(
+                          data.reservation_schedule,
+                          "YYYY-MM-DD h:mm A"
+                        ).format("MMM DD, YYYY h:mm A")}
+                      </Text>
+                    </Text>
+
+                    <Text style={styles.title}>
+                      Reservation Status: {""}
+                      {data.booking_status == 1 ? (
+                        <Text style={{ fontWeight: "normal", color: "green" }}>
+                          Confirmed
+                        </Text>
+                      ) : data.booking_status == 2 ? (
+                        <Text style={{ fontWeight: "normal", color: "orange" }}>
+                          Pending
+                        </Text>
+                      ) : (
+                        <Text style={{ fontWeight: "normal", color: "red" }}>
+                          Cancelled
+                        </Text>
+                      )}
+                    </Text>
+
+                    <Text style={styles.title}>
+                      Payment Status: {""}
+                      {data.payment.payment_status == 1 ? (
+                        <Text style={{ fontWeight: "normal", color: "green" }}>
+                          Verified
+                        </Text>
+                      ) : (
+                        <Text style={{ fontWeight: "normal", color: "red" }}>
+                          Not Verified
+                        </Text>
+                      )}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </>
+          ) : (
+            <Card>
+              <Text>No reservations available.</Text>
+            </Card>
           )}
-
-          {reservations.map((data, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() =>
-                navigation.navigate("ReservationView", { id: data.id })
-              }
-            >
-              <View style={styles.card}>
-                <Text style={styles.title}>
-                  Event Type:
-                  <Text style={styles.subtitle}> {data.event_type}</Text>
-                </Text>
-
-                <Text style={styles.title}>
-                  Schedule:
-                  <Text style={styles.subtitle}>
-                    {" "}
-                    {moment(
-                      data.reservation_schedule,
-                      "YYYY-MM-DD h:mm A"
-                    ).format("MMM DD, YYYY h:mm A")}
-                  </Text>
-                </Text>
-
-                <Text style={styles.title}>
-                  Reservation Status: {""}
-                  {data.booking_status == 1 ? (
-                    <Text style={{ fontWeight: "normal", color: "green" }}>
-                      Confirmed
-                    </Text>
-                  ) : data.booking_status == 2 ? (
-                    <Text style={{ fontWeight: "normal", color: "orange" }}>
-                      Pending
-                    </Text>
-                  ) : (
-                    <Text style={{ fontWeight: "normal", color: "red" }}>
-                      Cancelled
-                    </Text>
-                  )}
-                </Text>
-
-                <Text style={styles.title}>
-                  Payment Status: {""}
-                  {data.payment.payment_status == 1 ? (
-                    <Text style={{ fontWeight: "normal", color: "green" }}>
-                      Verified
-                    </Text>
-                  ) : (
-                    <Text style={{ fontWeight: "normal", color: "red" }}>
-                      Not Verified
-                    </Text>
-                  )}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
         </View>
       </View>
     </ScrollView>

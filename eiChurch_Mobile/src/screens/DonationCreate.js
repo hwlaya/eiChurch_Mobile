@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import api from "../../config/api";
 import * as ImagePicker from "expo-image-picker";
 import { FILE_PATH } from "../../config/directory";
+import Loading from "../components/Loading";
 
 const DonationCreate = () => {
   const navigation = useNavigation();
@@ -37,7 +38,19 @@ const DonationCreate = () => {
       console.log(`eto yung donation id: ${donationId}`);
       setDonation(donationId[0]);
     });
-  }, [id]);
+
+    const unsubscribe = navigation.addListener("focus", () => {
+      api.get("/donation/all").then((response) => {
+        const donations = response.data.donations;
+        const donationId = donations.filter((donation) => donation.id == id);
+
+        console.log(`eto yung donation id: ${donationId}`);
+        setDonation(donationId[0]);
+      });
+    });
+
+    return unsubscribe;
+  }, [navigation, id]);
 
   const pickDonationPayment = async () => {
     // No permissions request is necessary for launching the image library
@@ -163,6 +176,8 @@ const DonationCreate = () => {
   return (
     <ScrollView>
       <View style={{ flex: 1, padding: 20 }}>
+        <Loading loading={loading} />
+
         <Card>
           {donation ? (
             <>
@@ -324,11 +339,6 @@ const DonationCreate = () => {
           </View>
         </Card>
       </View>
-      {loading && (
-        <View style={styles.loadingOverlay}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      )}
     </ScrollView>
   );
 };

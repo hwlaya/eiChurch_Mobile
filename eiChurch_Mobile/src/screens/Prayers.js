@@ -67,8 +67,8 @@ const Prayers = () => {
             {prayers ? (
               <>
                 {prayers.map((prayer, index) => (
-                  <Card style={styles.card}>
-                    <View style={styles.newsContent} key={index}>
+                  <Card style={styles.card} key={index}>
+                    <View style={styles.newsContent}>
                       <Text style={styles.newsTitle}>
                         {prayer.prayer_title}
                       </Text>
