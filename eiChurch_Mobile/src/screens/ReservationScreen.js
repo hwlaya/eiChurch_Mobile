@@ -41,7 +41,7 @@ const ReservationScreen = () => {
   const [page, setPage] = useState(1);
 
   const { user } = useContext(UserContext);
-  const [registrantName, setRegistrantName] = useState(user ? user.name : "");
+  // const [registrantName, setRegistrantName] = useState(user ? user.name : "");
   const [applicantName, setApplicantName] = useState("");
   const [selectedDateDOB, setSelectedDateDOB] = useState(null);
 
@@ -532,10 +532,7 @@ const ReservationScreen = () => {
               }}
             >
               <CustomListHeader title="Personal Information" />
-              <CustomListItem
-                title="Name of Registrant"
-                value={registrantName}
-              />
+              <CustomListItem title="Name of Registrant" value={user.name} />
               {selectedEventType == "Sacrament" && (
                 <>
                   <CustomListItem

@@ -26,6 +26,8 @@ import ExplorePage from "../screens/ExplorePage";
 import ExploreGalleryPage from "../screens/ExploreGalleryPage";
 import ExploreGalleryPageView from "../screens/ExploreGalleryPageView";
 import ExploreRosary from "../screens/ExploreRosary";
+import LiveStreamIndex from "../screens/LiveStreamIndex";
+import Profile from "../screens/Profile";
 
 const DrawerStack = createDrawerNavigator();
 
@@ -46,7 +48,8 @@ const DrawerContent = ({ navigation, state }) => {
       <DrawerItem title={`Announcements`} />
       <DrawerItem title={`Explore`} />
       <DrawerItem title={`Reservation`} />
-      <DrawerItem title={`Donate`} />
+      <DrawerItem title={`Donation`} />
+      <DrawerItem title={`Live Stream`} />
       <DrawerItem title={`Profile`} />
       {/* <DrawerItem title={`Church 7`} />
       <DrawerItem title={`Church 8`} />
@@ -115,6 +118,18 @@ const DrawerNavigation = () => {
         name="DonationIndex"
         component={DonationIndex}
         options={{ headerTitle: "Donation", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen
+        name="LiveStreamIndex"
+        component={LiveStreamIndex}
+        options={{ headerTitle: "Live Stream", headerTitleAlign: "center" }}
+      />
+
+      <DrawerStack.Screen
+        name="Profile"
+        component={Profile}
+        options={{ headerTitle: "Profile", headerTitleAlign: "center" }}
       />
 
       <DrawerStack.Screen

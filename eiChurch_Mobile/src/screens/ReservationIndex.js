@@ -16,7 +16,7 @@ import moment from "moment";
 const ReservationIndex = () => {
   const navigation = useNavigation();
   const { user } = useContext(UserContext);
-  const [reservations, setReservations] = useState(null);
+  const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
     api
@@ -72,7 +72,7 @@ const ReservationIndex = () => {
         </View>
 
         <View style={{ marginTop: 30 }}>
-          {reservations ? (
+          {reservations.length != 0 ? (
             <>
               {reservations.map((data, index) => (
                 <TouchableOpacity
