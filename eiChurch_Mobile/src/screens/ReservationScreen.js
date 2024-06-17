@@ -57,7 +57,7 @@ const ReservationScreen = () => {
   const [paymentImageUri, setPaymentImageUri] = useState("");
   const [paymentImageName, setPaymentImageName] = useState("");
   const minDateSR = new Date();
-  minDateSR.setDate(minDateSR.getDate() + 3);
+  minDateSR.setDate(minDateSR.getDate() + 7);
 
   const eventTypeList = ["Sacrament", "Service Mass", "Blessing", "Other"];
   const timeList = [
@@ -269,13 +269,71 @@ const ReservationScreen = () => {
   };
 
   const handleNext = () => {
-    if (page == 3) {
+    // if (page == 3) {
+    //   handleSubmit();
+    // } else {
+    //   let tempProgress = progress;
+    //   tempProgress = tempProgress + 0.25;
+    //   setPage(page + 1);
+    //   setProgress(tempProgress);
+    // }
+    if (page == 1) {
+      if (selectedEventType == "") {
+        Alert.alert("Error!", "The event type field is required!");
+      } else if (selectedEventType == "Sacrament" && selectedSacrament == "") {
+        Alert.alert("Error!", "The sacrament field is required!");
+      } else {
+        let tempProgress = progress;
+        tempProgress = tempProgress + 0.25;
+        setPage(page + 1);
+        setProgress(tempProgress);
+      }
+    } else if (page == 2) {
+      if (selectedEventType == "Sacrament") {
+        if (applicantName == "") {
+          Alert.alert("Error!", "The name of applicant field is required!");
+        } else if (selectedDateDOB == null) {
+          Alert.alert("Error!", "The date of birth field is required!");
+        } else if (selectedDateSR == null) {
+          Alert.alert(
+            "Error!",
+            "The schedule of reservation field is required!"
+          );
+        } else if (eventTime == "") {
+          Alert.alert("Error!", "The time of reservation field is required!");
+        } else if (paymentType == "") {
+          Alert.alert("Error!", "The payment type field is required!");
+        } else if (selectedRequirementImage.length == 0) {
+          Alert.alert("Error!", "The requirement file field is required!");
+        } else {
+          let tempProgress = progress;
+          tempProgress = tempProgress + 0.25;
+          setPage(page + 1);
+          setProgress(tempProgress);
+        }
+      } else {
+        if (eventName == "") {
+          Alert.alert("Error!", "The name of event field is required!");
+        } else if (eventFacilitator == "") {
+          Alert.alert("Error!", "The event facilitator field is required!");
+        } else if (selectedDateSR == null) {
+          Alert.alert(
+            "Error!",
+            "The schedule of reservation field is required!"
+          );
+        } else if (eventTime == "") {
+          Alert.alert("Error!", "The time of reservation field is required!");
+        } else if (paymentType == "") {
+          Alert.alert("Error!", "The payment type field is required!");
+        } else {
+          let tempProgress = progress;
+          tempProgress = tempProgress + 0.25;
+          setPage(page + 1);
+          setProgress(tempProgress);
+        }
+      }
+    } else if (page == 3) {
       handleSubmit();
-    } else {
-      let tempProgress = progress;
-      tempProgress = tempProgress + 0.25;
-      setPage(page + 1);
-      setProgress(tempProgress);
     }
   };
 
