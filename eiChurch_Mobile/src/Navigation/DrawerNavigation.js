@@ -28,6 +28,8 @@ import ExploreGalleryPageView from "../screens/ExploreGalleryPageView";
 import ExploreRosary from "../screens/ExploreRosary";
 import LiveStreamIndex from "../screens/LiveStreamIndex";
 import Profile from "../screens/Profile";
+import DonationWebView from "../screens/DonationWebView";
+import ReservationWebView from "../screens/ReservationWebView";
 
 const DrawerStack = createDrawerNavigator();
 
@@ -258,6 +260,22 @@ const DrawerNavigation = () => {
         component={ChurchNewsAndUpdatesView}
         options={{
           headerTitle: "View Announcement",
+          headerTitleAlign: "center",
+        }}
+      />
+      <DrawerStack.Screen
+        name="DonationWebView"
+        component={DonationWebView}
+        options={{
+          headerTitle: "Donation",
+          headerTitleAlign: "center",
+        }}
+      />
+      <DrawerStack.Screen
+        name="ReservationWebView"
+        component={ReservationWebView}
+        options={{
+          headerTitle: "Reservation",
           headerTitleAlign: "center",
         }}
       />

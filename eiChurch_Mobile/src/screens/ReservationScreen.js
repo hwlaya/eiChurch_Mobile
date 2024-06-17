@@ -247,25 +247,53 @@ const ReservationScreen = () => {
     formdata.append("payment_type", selectedPayment);
     console.log("Form Data:", formdata);
 
-    api
-      .post(`reservation/create`, formdata, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((response) => {
-        Alert.alert("Success", "Reservation created successfully!");
-        navigation.navigate("ReservationIndex");
-        resetForm();
-        console.log(response);
-      })
-      .catch((err) => {
-        Alert.alert("Error", "Failed to create reservation");
-        console.log("errorzz", err);
-      })
-      .finally(() => {
-        setLoading(false); // Set loading to false when submission ends
-      });
+    if (selectedPayment == "ovc") {
+      api
+        .post(`reservation/create`, formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          Alert.alert("Success", "Reservation created successfully!");
+          navigation.navigate("ReservationIndex");
+          resetForm();
+          console.log(response);
+        })
+        .catch((err) => {
+          Alert.alert("Error", "Failed to create reservation");
+          console.log("errorzz", err);
+        })
+        .finally(() => {
+          setLoading(false); // Set loading to false when submission ends
+        });
+    } else
+      api
+        .post(`reservation/create`, formdata, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          Alert.alert(
+            "Success",
+            "Reservation created successfully! Please take note that canceling the payment, may forfeit your reservation."
+          );
+          navigation.navigate("ReservationWebView", {
+            reservation_schedule: reservationDateTime,
+          });
+          resetForm();
+          console.log(response);
+        })
+        .catch((err) => {
+          Alert.alert("Error", "Failed to create reservation");
+          console.log("errorzz", err);
+        })
+        .finally(() => {
+          setLoading(false); // Set loading to false when submission ends
+        });
+    {
+    }
   };
 
   const handleNext = () => {
@@ -550,7 +578,7 @@ const ReservationScreen = () => {
                     >
                       Attach the Requirements
                     </Text>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       style={styles.uploadPhotoPlaceholder}
                       onPress={pickRequirementImage}
                     >
@@ -564,7 +592,13 @@ const ReservationScreen = () => {
                           UPLOAD FILE
                         </Text>
                       </>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+                    <Button
+                      onPress={pickRequirementImage}
+                      style={{ marginTop: 10 }}
+                    >
+                      Upload File
+                    </Button>
                     {requirementImageUri && (
                       <Image
                         source={{ uri: requirementImageUri }}
@@ -637,7 +671,7 @@ const ReservationScreen = () => {
                 }
               />
             </View>
-            {paymentType == "Online Payment" && (
+            {/* {paymentType == "Online Payment" && (
               <View style={styles.uploadPhotoContainer}>
                 <Text
                   category="label"
@@ -668,7 +702,7 @@ const ReservationScreen = () => {
                   />
                 )}
               </View>
-            )}
+            )} */}
           </View>
         )}
         {/* BUTTON NAVIGATOR */}

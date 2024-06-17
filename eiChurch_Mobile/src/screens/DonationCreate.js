@@ -38,6 +38,7 @@ const DonationCreate = () => {
       console.log(`eto yung donation id: ${donationId}`);
       setDonation(donationId[0]);
     });
+    resetForm();
 
     const unsubscribe = navigation.addListener("focus", () => {
       api.get("/donation/all").then((response) => {
@@ -47,6 +48,7 @@ const DonationCreate = () => {
         console.log(`eto yung donation id: ${donationId}`);
         setDonation(donationId[0]);
       });
+      resetForm();
     });
 
     return unsubscribe;
@@ -173,6 +175,24 @@ const DonationCreate = () => {
     }
   };
 
+  const handleOnlinePayment = () => {
+    if (donation.donation_type == "Monetary" && donationFee == "") {
+      Alert.alert("Error", "The donation fee field is required!");
+    } else if (
+      donation.donation_type == "Monetary" &&
+      !/^\d*$/.test(donationFee)
+    ) {
+      Alert.alert("Error", "The donation fee field should be a number!");
+    } else if (donationFee < 20) {
+      Alert.alert("Error", "The minimum donation fee is P20!");
+    } else {
+      navigation.navigate("DonationWebView", {
+        id: id,
+        amount: donationFee,
+      });
+    }
+  };
+
   return (
     <ScrollView>
       <View style={{ flex: 1, padding: 20 }}>
@@ -273,7 +293,7 @@ const DonationCreate = () => {
                       style={{ marginBottom: 10 }}
                     />
 
-                    <Button
+                    {/* <Button
                       onPress={pickDonationPayment}
                       style={{ marginBottom: 10 }}
                     >
@@ -287,7 +307,7 @@ const DonationCreate = () => {
                           style={{ flex: 1, resizeMode: "contain" }}
                         />
                       </View>
-                    )}
+                    )} */}
                   </>
                 )}
 
@@ -333,9 +353,16 @@ const DonationCreate = () => {
             }}
           >
             <CustomBackButton route="DonationIndex" />
-            <Button size="small" onPress={handleSubmit}>
-              Donate
-            </Button>
+            {(donation && donation.donation_type) == "Non-monetary" && (
+              <Button size="small" onPress={handleSubmit}>
+                Donate
+              </Button>
+            )}
+            {(donation && donation.donation_type) == "Monetary" && (
+              <Button size="small" onPress={handleOnlinePayment}>
+                Donate
+              </Button>
+            )}
           </View>
         </Card>
       </View>
