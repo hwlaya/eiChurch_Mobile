@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Text, Card } from "@ui-kitten/components";
@@ -15,6 +16,7 @@ import api from "../../config/api";
 import { WebView } from "react-native-webview";
 import { UserContext } from "../providers/UserProvider";
 import { Octicons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -60,24 +62,15 @@ const HomeScreen = () => {
   }, []);
 
   return (
-    <ImageBackground
-      source={require("../assets/images/background4.jpg")} // Specify the path to your background image
-      style={styles.backgroundImage}
-    >
-      <ScrollView style={styles.container}>
-        {/* Temporary Header*/}
-        <View style={styles.headerContainer}>
-          <Text
-            style={{
-              fontSize: 15,
-              fontFamily: "Montserrat-Bold",
-            }}
-          >
-            Welcome to San Roque Parish
-          </Text>
-        </View>
-
-        {/* Carousel Section */}
+    <ScrollView style={{ backgroundColor: "white" }}>
+      <View
+        style={{
+          padding: 16,
+          backgroundColor: "rgb(2 132 199)",
+          borderBottomStartRadius: 20,
+          borderBottomEndRadius: 20,
+        }}
+      >
         <View style={styles.carouselContainer}>
           <Carousel
             loop
@@ -100,126 +93,120 @@ const HomeScreen = () => {
           />
         </View>
 
-        {/* Cards */}
-        <View style={styles.cardsContainer}>
-          {/* Card 1: Bible Verse of the Day */}
-          <Card style={styles.card}>
-            <BibleVerseOfTheDay />
-          </Card>
+        <Card style={styles.card}>
+          <BibleVerseOfTheDay />
+        </Card>
+      </View>
 
-          <View>
-            <Text style={styles.textStyle}>Church News and Updates</Text>
+      <View style={styles.cardsContainer}>
+        <View style={styles.headerContainer}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "Montserrat-Bold",
+              color: "black",
+              textAlign: "center",
+            }}
+          >
+            Welcome to San Roque Parish
+          </Text>
+          <Text
+            style={{
+              marginTop: 5,
+              fontSize: 15,
+              fontFamily: "Montserrat-Light",
+              color: "black",
+              textAlign: "center",
+            }}
+          >
+            Explore the features offered by the app:
+          </Text>
+        </View>
 
-            {/* News and Updates Feed */}
-            <Card
-              style={styles.card}
+        <View
+          style={{
+            flex: 1,
+            flexWrap: "wrap",
+            flexDirection: "row",
+            justifyContent: "space-around",
+            marginTop: 10,
+          }}
+        >
+          <View style={styles.boxContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ChurchScreen")}
+            >
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon
+                  name="information-outline"
+                  color={"rgb(2 132 199)"}
+                  size={50}
+                />
+                <Text style={styles.boxLabel}>About Us</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.boxContainer}>
+            <TouchableOpacity
               onPress={() => navigation.navigate("ChurchNewsAndUpdates")}
             >
-              {/* Post 1 */}
-              {announcements.map((announcement, index) => (
-                <View key={index} style={styles.newsFeedItem}>
-                  <Image
-                    source={{
-                      uri: `https://sanroqueparish.com/DataSonicCapstone-main/public/images/announcements/${announcement.announcement_image}`,
-                    }} // Replace with actual thumbnail source
-                    style={styles.thumbnail}
-                  />
-                  {/* Content */}
-                  <View style={styles.newsContent}>
-                    {/* Title */}
-                    <Text style={styles.newsTitle}>
-                      {announcement.announcement_title}
-                    </Text>
-                    {/* Caption */}
-                    <Text style={styles.newsCaption}>
-                      {announcement.announcement_content}
-                    </Text>
-                  </View>
-                </View>
-              ))}
-            </Card>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon
+                  name="bullhorn-outline"
+                  color={"rgb(2 132 199)"}
+                  size={50}
+                />
+                <Text style={styles.boxLabel}>Announcements</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-          <View>
-            <Text style={styles.textStyle}>Celebration and Events</Text>
-            <Card
-              style={styles.card}
-              onPress={() => navigation.navigate("CelebrationEvents")}
+          <View style={styles.boxContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ExplorePage")}
             >
-              <Text style={styles.subTitle}>CELEBRATION EVENTS CALENDAR</Text>
-              <Text style={styles.caption}>
-                Join us in commemorating the joyous moments and meaningful
-                occasions that mark our shared journey of faith and fellowship.
-              </Text>
-            </Card>
-            <View>
-              <Card
-                style={styles.card}
-                onPress={() => navigation.navigate("Prayers")}
-              >
-                <Text style={styles.textStyle}>Prayers</Text>
-                <View style={{ height: 300, marginBottom: -100 }}>
-                  <Image
-                    source={require("../assets/images/prayer.jpg")}
-                    style={styles.prayerThumbnail}
-                  />
-                </View>
-                <Text style={styles.subTextStyle}>
-                  Need Guidance? Press Here
-                </Text>
-              </Card>
-            </View>
-            <View>
-              <Text style={styles.textStyle}>Live Streams</Text>
-              {livestreams.length > 0 &&
-                livestreams.map((item, index) => {
-                  return (
-                    <Card
-                      style={styles.card}
-                      onPress={() =>
-                        navigation.navigate("LiveStream", {
-                          token: user.token,
-                          user: user.user,
-                          room: item.livestream_name,
-                        })
-                      }
-                      key={index}
-                    >
-                      <Text style={styles.subTitle}>Watch Mass Live Here </Text>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Octicons
-                          name="device-camera-video"
-                          size={24}
-                          color="black"
-                        />
-                        {""}
-                        <Text style={styles.subTextStyle}>
-                          {item.livestream_name}
-                        </Text>
-                      </View>
-                    </Card>
-                  );
-                })}
-            </View>
-            <Text style={styles.textStyle}>Current Events</Text>
-            <Card
-              style={styles.card}
-              onPress={() => navigation.navigate("CurrentEvents")}
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon name="magnify" color={"rgb(2 132 199)"} size={50} />
+                <Text style={styles.boxLabel}>Explore</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.boxContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ReservationIndex")}
             >
-              <Text style={styles.caption}>
-                Stay informed and engaged with the latest happenings and
-                activities in our church community through our current events.
-              </Text>
-            </Card>
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon
+                  name="calendar-outline"
+                  color={"rgb(2 132 199)"}
+                  size={50}
+                />
+                <Text style={styles.boxLabel}>Reservation</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.boxContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("DonationIndex")}
+            >
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon name="heart-outline" color={"rgb(2 132 199)"} size={50} />
+                <Text style={styles.boxLabel}>Donation</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.boxContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("LiveStreamIndex")}
+            >
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <Icon name="video-outline" color={"rgb(2 132 199)"} size={50} />
+                <Text style={styles.boxLabel}>Live Stream</Text>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
-    </ImageBackground>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -232,8 +219,8 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   headerContainer: {
-    marginTop: 40,
-    marginBottom: 20,
+    // marginTop: 5,
+    marginBottom: 10,
     alignItems: "left",
   },
   carouselContainer: {
@@ -278,13 +265,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   cardsContainer: {
-    marginTop: 20,
+    marginTop: 5,
+    padding: 16,
   },
   card: {
-    marginBottom: 10,
+    marginVertical: 10,
     padding: 5,
     borderRadius: 10,
-    backgroundColor: "#F3EFE0",
+    backgroundColor: "white",
   },
   centerText: {
     textAlign: "center",
@@ -324,6 +312,21 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "60%",
     borderRadius: 10,
+  },
+  boxContainer: {
+    backgroundColor: "white",
+    width: "45%",
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    marginVertical: 10,
+    elevation: 5,
+  },
+  boxLabel: {
+    fontFamily: "Montserrat-Medium",
+    fontSize: 15,
+    marginTop: 10,
   },
 });
 
