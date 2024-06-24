@@ -95,7 +95,7 @@ const LiveStream = () => {
       {/* <Button onPress={handleForceReload}>Force Reload</Button> */}
       <Button onPress={handleClearCache}>Clear Cache</Button>
       <Button
-        onPress={() => navigation.navigate("HomeScreen")}
+        onPress={() => navigation.navigate("LiveStreamIndex")}
         icon={() => <Icon name="arrow-left" size={50} color={"#000"} />}
       />
     </View>

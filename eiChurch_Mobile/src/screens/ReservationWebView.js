@@ -11,14 +11,14 @@ const ReservationWebView = () => {
   const webViewRef = useRef(null);
   const [uri, setUri] = useState(
     decodeURI(
-      `http://192.168.1.11:8000/api/reservation/pay/${reservation_schedule}`
+      `https://sanroqueparish.com/api/reservation/pay/${reservation_schedule}`
     )
   );
   const [key, setKey] = useState(0);
 
   useEffect(() => {
     const decodUri = decodeURI(
-      `http://192.168.1.11:8000/api/reservation/pay/${reservation_schedule}`
+      `https://sanroqueparish.com/api/reservation/pay/${reservation_schedule}`
     ); // change the URI to prod
     setUri(decodUri);
 

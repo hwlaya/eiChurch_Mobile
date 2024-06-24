@@ -10,13 +10,13 @@ const DonationWebView = () => {
   const { id, amount } = route.params;
   const webViewRef = useRef(null);
   const [uri, setUri] = useState(
-    decodeURI(`http://192.168.1.11:8000/api/pay/${id}/${amount}`)
+    decodeURI(`https://sanroqueparish.com/api/pay/${id}/${amount}`)
   );
   const [key, setKey] = useState(0);
 
   useEffect(() => {
     const decodUri = decodeURI(
-      `http://192.168.1.11:8000/api/pay/${id}/${amount}`
+      `https://sanroqueparish.com/api/pay/${id}/${amount}`
     ); // change the URI to prod
     setUri(decodUri);
 
