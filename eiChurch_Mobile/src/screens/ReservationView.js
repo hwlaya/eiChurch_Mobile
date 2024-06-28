@@ -23,6 +23,7 @@ const ReservationView = () => {
     api
       .get(`viewReservationMobile/${id}`)
       .then((response) => {
+        // console.log(response.data);
         setReservation(response.data);
       })
       .catch((error) => {
@@ -118,6 +119,156 @@ const ReservationView = () => {
                     : "Cancelled"
                 }
               />
+
+              {reservation.sacrament != null &&
+                reservation.sacrament.id != 3 && (
+                  <>
+                    <CustomListHeader title="Other Details" />
+
+                    {reservation.sacrament.sacrament == "Baptism" && (
+                      <CustomListItem
+                        title="Type of Baptism"
+                        value={
+                          reservation.reservation_sacrament.type_of_baptism
+                        }
+                      />
+                    )}
+
+                    {(reservation.sacrament.sacrament == "Baptism" ||
+                      reservation.sacrament.sacrament == "Communion") && (
+                      <>
+                        <CustomListItem
+                          title="Contact Number"
+                          value={
+                            reservation.reservation_sacrament.contact_number
+                          }
+                        />
+                        <CustomListItem
+                          title="Place of Birth"
+                          value={
+                            reservation.reservation_sacrament.place_of_birth
+                          }
+                        />
+                      </>
+                    )}
+
+                    {reservation.sacrament.sacrament == "Communion" && (
+                      <CustomListItem
+                        title="Age"
+                        value={reservation.reservation_sacrament.age}
+                      />
+                    )}
+
+                    {reservation.sacrament.sacrament != "Matrimony" && (
+                      <>
+                        <CustomListItem
+                          title="Father's Name"
+                          value={reservation.reservation_sacrament.father_name}
+                        />
+                        {reservation.sacrament.sacrament != "Confirmation" && (
+                          <CustomListItem
+                            title="Father's Birth Place"
+                            value={
+                              reservation.reservation_sacrament
+                                .father_place_of_birth
+                            }
+                          />
+                        )}
+                        <CustomListItem
+                          title="Mother's Name"
+                          value={reservation.reservation_sacrament.mother_name}
+                        />
+                        {reservation.sacrament.sacrament != "Confirmation" && (
+                          <CustomListItem
+                            title="Mother's Birth Place"
+                            value={
+                              reservation.reservation_sacrament
+                                .mother_place_of_birth
+                            }
+                          />
+                        )}
+                        <CustomListItem
+                          title="Address"
+                          value={reservation.reservation_sacrament.address}
+                        />
+                      </>
+                    )}
+
+                    {reservation.sacrament.sacrament == "Baptism" && (
+                      <CustomListItem
+                        title="Marriage Type"
+                        value={reservation.reservation_sacrament.marriage_type}
+                      />
+                    )}
+
+                    {(reservation.sacrament.sacrament == "Communion" ||
+                      reservation.sacrament.sacrament == "Confirmation") && (
+                      <>
+                        <CustomListItem
+                          title="Date of Baptism"
+                          value={
+                            reservation.reservation_sacrament.date_of_baptism
+                          }
+                        />
+                        <CustomListItem
+                          title="Church"
+                          value={reservation.reservation_sacrament.church}
+                        />
+                        <CustomListItem
+                          title="Date of Seminar"
+                          value={
+                            reservation.reservation_sacrament.date_of_seminar
+                          }
+                        />
+                        <CustomListItem
+                          title="Catechist"
+                          value={reservation.reservation_sacrament.catechist}
+                        />
+                      </>
+                    )}
+
+                    {(reservation.sacrament.sacrament == "Baptism" ||
+                      reservation.sacrament.sacrament == "Confirmation") && (
+                      <>
+                        <CustomListItem
+                          title="Godfather"
+                          value={
+                            reservation.reservation_sacrament.first_sponsor
+                          }
+                        />
+                        <CustomListItem
+                          title="Godfather's Address"
+                          value={
+                            reservation.reservation_sacrament
+                              .first_sponsor_address
+                          }
+                        />
+                        <CustomListItem
+                          title="Godmother"
+                          value={
+                            reservation.reservation_sacrament.second_sponsor
+                          }
+                        />
+                        <CustomListItem
+                          title="Godmother's Address"
+                          value={
+                            reservation.reservation_sacrament
+                              .second_sponsor_address
+                          }
+                        />
+                      </>
+                    )}
+
+                    {reservation.sacrament.sacrament == "Baptism" && (
+                      <CustomListItem
+                        title="Additional Sponsor"
+                        value={
+                          reservation.reservation_sacrament.additional_sponsors
+                        }
+                      />
+                    )}
+                  </>
+                )}
 
               <CustomListHeader title="Payment Details" />
               <CustomListItem

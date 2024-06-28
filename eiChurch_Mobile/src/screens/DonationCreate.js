@@ -185,6 +185,11 @@ const DonationCreate = () => {
       Alert.alert("Error", "The donation fee field should be a number!");
     } else if (donationFee < 20) {
       Alert.alert("Error", "The minimum donation fee is P20!");
+    } else if (donationFee > 100000) {
+      Alert.alert(
+        "Error",
+        "The maximum donation fee is P100,000 per transaction!"
+      );
     } else {
       navigation.navigate("DonationWebView", {
         id: id,

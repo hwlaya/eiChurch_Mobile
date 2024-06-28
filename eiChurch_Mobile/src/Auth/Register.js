@@ -47,6 +47,7 @@ const Register = () => {
   }, [email, username]);
 
   const handleRegister = () => {
+    const alphanumericRegex = /^[a-z0-9]+$/i;
     if (
       firstName == "" ||
       lastName == "" ||
@@ -56,6 +57,16 @@ const Register = () => {
       confirmPassword == ""
     ) {
       Alert.alert("Error!", "Please fill out the fields!");
+    } else if (username.trim().length >= 20) {
+      Alert.alert(
+        "Error!",
+        "The username must not be greater than 20 characters."
+      );
+    } else if (!alphanumericRegex.test(username)) {
+      Alert.alert(
+        "Error!",
+        "The username must only contain letters and numbers."
+      );
     } else if (checkUsername) {
       Alert.alert("Error!", "The username has already been taken.");
     } else if (checkEmail) {

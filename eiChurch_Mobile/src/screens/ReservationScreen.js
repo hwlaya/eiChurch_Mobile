@@ -89,6 +89,14 @@ const ReservationScreen = () => {
     "Photocopy of Birth Certificate",
   ];
 
+  const baptismTypes = [
+    "Ordinary Sunday",
+    "Special Baptism",
+    "Binyagang Bayan",
+  ];
+
+  const marriageTypes = ["Catholic", "Civil", "Not Married"];
+
   const paymentTypes = [
     {
       id: "ovc",
@@ -110,6 +118,29 @@ const ReservationScreen = () => {
   const [paymentType, setPaymentType] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // additional forms:
+  const [typeOfBaptism, setTypeOfBaptism] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
+  const [placeOfBirth, setPlaceOfBirth] = useState("");
+  const [age, setAge] = useState("");
+  const [fatherName, setFatherName] = useState("");
+  const [fatherBirthPlace, setFatherBirthPlace] = useState("");
+  const [motherName, setMotherName] = useState("");
+  const [motherBirthPlace, setMotherBirthPlace] = useState("");
+  const [address, setAddress] = useState("");
+  const [typeOfMarriage, setTypeOfMarriage] = useState("");
+  const [dateOfBaptism, setDateOfBaptism] = useState("");
+  const [church, setChurch] = useState("");
+  const [dateOfSeminar, setDateOfSeminar] = useState("");
+  const [catechist, setCatechist] = useState("");
+  const [godFather, setGodFather] = useState("");
+  const [godFatherAddress, setGodFatherAddress] = useState("");
+  const [godMother, setGodMother] = useState("");
+  const [godMotherAddress, setGodMotherAddress] = useState("");
+  const [additionalSponsors, setAdditionalSponsors] = useState("");
+
+  const [reservationFee, setReservationFee] = useState("");
+
   useEffect(() => {
     api
       .get(`sacraments/all`)
@@ -129,8 +160,48 @@ const ReservationScreen = () => {
         (sacrament) => sacrament.sacrament === selectedSacrament
       );
       setSacramentDetails(sacramentDetails);
+
+      setTypeOfBaptism("");
+      setContactNumber("");
+      setPlaceOfBirth("");
+      setAge("");
+      setFatherName("");
+      setFatherBirthPlace("");
+      setMotherName("");
+      setMotherBirthPlace("");
+      setAddress("");
+      setTypeOfMarriage("");
+      setDateOfBaptism("");
+      setChurch("");
+      setDateOfSeminar("");
+      setCatechist("");
+      setGodFather("");
+      setGodFatherAddress("");
+      setGodMother("");
+      setGodMotherAddress("");
+      setAdditionalSponsors("");
+
+      setRequirementImageStatus(false); // not impo
+      setRequirementImageUri("");
+      setRequirementImageName(""); // not impo
+      setSelectedRequirementImage([]);
     }
   }, [selectedSacrament]);
+
+  useEffect(() => {
+    if (selectedEventType == "Sacrament") {
+      setEventName("");
+      setEventFacilitator("");
+      setReservationFee("");
+    } else {
+      setApplicantName("");
+      setSelectedDateDOB(null);
+      setRequirementImageUri("");
+      setSelectedRequirementImage([]);
+      setSelectedSacrament("");
+      setReservationFee("");
+    }
+  }, [selectedEventType]);
 
   useEffect(() => {
     api
@@ -220,6 +291,7 @@ const ReservationScreen = () => {
     formdata.append("user_id", user.id);
     formdata.append("reservation_schedule", reservationDateTime);
     formdata.append("event_type", selectedEventType);
+    formdata.append("total_price", reservationFee);
 
     if (selectedEventType == "Sacrament") {
       // sacrament
@@ -231,13 +303,31 @@ const ReservationScreen = () => {
       formdata.append("sacrament", sacramentDetails.id);
       // formdata.append("requirement_images[]", requirementImage);
       formdata.append("mobile_requirement_images", selectedRequirementImage); // will only work if the foreach is not implemented in backend
-      formdata.append("total_price", sacramentDetails.fee);
+
+      formdata.append("contact_number", contactNumber);
+      formdata.append("place_of_birth", placeOfBirth);
+      formdata.append("father_name", fatherName);
+      formdata.append("father_place_of_birth", fatherBirthPlace);
+      formdata.append("mother_name", motherName);
+      formdata.append("mother_place_of_birth", motherBirthPlace);
+      formdata.append("address", address);
+      formdata.append("first_sponsor", godFather);
+      formdata.append("second_sponsor", godMother);
+      formdata.append("first_sponsor_address", godFatherAddress);
+      formdata.append("second_sponsor_address", godMotherAddress);
+      formdata.append("date_of_baptism", dateOfBaptism);
+      formdata.append("church", church);
+      formdata.append("date_of_seminar", dateOfSeminar);
+      formdata.append("catechist", catechist);
+
+      formdata.append("type_of_baptism", typeOfBaptism);
+      formdata.append("marriage_type", typeOfMarriage);
+      formdata.append("additional_sponsors", additionalSponsors);
+      formdata.append("age", age);
     } else {
       // event
       formdata.append("event_name", eventName);
       formdata.append("event_facilitator", eventFacilitator);
-
-      formdata.append("total_price", "100");
     }
 
     if (selectedPayment == "op") {
@@ -317,47 +407,177 @@ const ReservationScreen = () => {
         setProgress(tempProgress);
       }
     } else if (page == 2) {
+      function validateReservationFee(fee) {
+        if (!/^\d*$/.test(fee)) {
+          return "The reservation fee field should be a number!";
+        } else if (fee < 100) {
+          return "The minimum reservation fee is P100!";
+        } else if (fee > 1000) {
+          return "The maximum reservation fee is P1000!";
+        }
+        return null;
+      }
+
+      function validateContactNumber(number) {
+        if (!/^\d*$/.test(number)) {
+          return "The contact number field should be a number!";
+        }
+        return null;
+      }
+
       if (selectedEventType == "Sacrament") {
-        if (applicantName == "") {
-          Alert.alert("Error!", "The name of applicant field is required!");
-        } else if (selectedDateDOB == null) {
-          Alert.alert("Error!", "The date of birth field is required!");
-        } else if (selectedDateSR == null) {
-          Alert.alert(
-            "Error!",
-            "The schedule of reservation field is required!"
-          );
-        } else if (eventTime == "") {
-          Alert.alert("Error!", "The time of reservation field is required!");
-        } else if (paymentType == "") {
-          Alert.alert("Error!", "The payment type field is required!");
-        } else if (selectedRequirementImage.length == 0) {
-          Alert.alert("Error!", "The requirement file field is required!");
-        } else {
-          let tempProgress = progress;
-          tempProgress = tempProgress + 0.25;
-          setPage(page + 1);
-          setProgress(tempProgress);
+        if (selectedSacrament == "Baptism") {
+          if (
+            applicantName == "" ||
+            selectedDateDOB == null ||
+            selectedDateSR == null ||
+            eventTime == "" ||
+            selectedRequirementImage.length == 0 ||
+            reservationFee == "" ||
+            paymentType == "" ||
+            typeOfBaptism == "" ||
+            contactNumber == "" ||
+            placeOfBirth == "" ||
+            fatherName == "" ||
+            fatherBirthPlace == "" ||
+            motherName == "" ||
+            motherBirthPlace == "" ||
+            address == "" ||
+            typeOfMarriage == "" ||
+            godFather == "" ||
+            godFatherAddress == "" ||
+            godMother == "" ||
+            godMotherAddress == "" ||
+            additionalSponsors == ""
+          ) {
+            Alert.alert("Error!", "Complete filling out the form!");
+          } else {
+            const reservationFeeError = validateReservationFee(reservationFee);
+            const contactNumberError = validateContactNumber(contactNumber);
+            if (contactNumberError) {
+              Alert.alert("Error!", contactNumberError);
+            } else if (reservationFeeError) {
+              Alert.alert("Error!", reservationFeeError);
+            } else {
+              let tempProgress = progress;
+              tempProgress = tempProgress + 0.25;
+              setPage(page + 1);
+              setProgress(tempProgress);
+            }
+          }
+        } else if (selectedSacrament == "Communion") {
+          if (
+            applicantName == "" ||
+            selectedDateDOB == null ||
+            selectedDateSR == null ||
+            eventTime == "" ||
+            selectedRequirementImage.length == 0 ||
+            reservationFee == "" ||
+            paymentType == "" ||
+            contactNumber == "" ||
+            placeOfBirth == "" ||
+            age == "" ||
+            fatherName == "" ||
+            fatherBirthPlace == "" ||
+            motherName == "" ||
+            motherBirthPlace == "" ||
+            address == "" ||
+            dateOfBaptism == "" ||
+            church == "" ||
+            dateOfSeminar == "" ||
+            catechist == ""
+          ) {
+            Alert.alert("Error!", "Complete filling out the form!");
+          } else {
+            const reservationFeeError = validateReservationFee(reservationFee);
+            const contactNumberError = validateContactNumber(contactNumber);
+            if (contactNumberError) {
+              Alert.alert("Error!", contactNumberError);
+            } else if (reservationFeeError) {
+              Alert.alert("Error!", reservationFeeError);
+            } else {
+              let tempProgress = progress;
+              tempProgress = tempProgress + 0.25;
+              setPage(page + 1);
+              setProgress(tempProgress);
+            }
+          }
+        } else if (selectedSacrament == "Matrimony") {
+          if (
+            applicantName == "" ||
+            selectedDateDOB == null ||
+            selectedDateSR == null ||
+            eventTime == "" ||
+            selectedRequirementImage.length == 0 ||
+            reservationFee == "" ||
+            paymentType == ""
+          ) {
+            Alert.alert("Error!", "Complete filling out the form!");
+          } else {
+            const reservationFeeError = validateReservationFee(reservationFee);
+            if (reservationFeeError) {
+              Alert.alert("Error!", reservationFeeError);
+            } else {
+              let tempProgress = progress;
+              tempProgress = tempProgress + 0.25;
+              setPage(page + 1);
+              setProgress(tempProgress);
+            }
+          }
+        } else if (selectedSacrament == "Confirmation") {
+          if (
+            applicantName == "" ||
+            selectedDateDOB == null ||
+            selectedDateSR == null ||
+            eventTime == "" ||
+            selectedRequirementImage.length == 0 ||
+            reservationFee == "" ||
+            paymentType == "" ||
+            fatherName == "" ||
+            motherName == "" ||
+            address == "" ||
+            dateOfBaptism == "" ||
+            church == "" ||
+            dateOfSeminar == "" ||
+            catechist == "" ||
+            godFather == "" ||
+            godFatherAddress == "" ||
+            godMother == "" ||
+            godMotherAddress == ""
+          ) {
+            Alert.alert("Error!", "Complete filling out the form!");
+          } else {
+            const reservationFeeError = validateReservationFee(reservationFee);
+            if (reservationFeeError) {
+              Alert.alert("Error!", reservationFeeError);
+            } else {
+              let tempProgress = progress;
+              tempProgress = tempProgress + 0.25;
+              setPage(page + 1);
+              setProgress(tempProgress);
+            }
+          }
         }
       } else {
-        if (eventName == "") {
-          Alert.alert("Error!", "The name of event field is required!");
-        } else if (eventFacilitator == "") {
-          Alert.alert("Error!", "The event facilitator field is required!");
-        } else if (selectedDateSR == null) {
-          Alert.alert(
-            "Error!",
-            "The schedule of reservation field is required!"
-          );
-        } else if (eventTime == "") {
-          Alert.alert("Error!", "The time of reservation field is required!");
-        } else if (paymentType == "") {
-          Alert.alert("Error!", "The payment type field is required!");
+        if (
+          eventName == "" ||
+          eventFacilitator == "" ||
+          selectedDateSR == null ||
+          eventTime == "" ||
+          reservationFee == "" ||
+          paymentType == ""
+        ) {
+          Alert.alert("Error!", "Complete filling out the form!");
         } else {
-          let tempProgress = progress;
-          tempProgress = tempProgress + 0.25;
-          setPage(page + 1);
-          setProgress(tempProgress);
+          const reservationFeeError = validateReservationFee(reservationFee);
+          if (reservationFeeError) {
+            Alert.alert("Error!", reservationFeeError);
+          } else {
+            let tempProgress = progress;
+            tempProgress = tempProgress + 0.25;
+            setPage(page + 1);
+            setProgress(tempProgress);
+          }
         }
       }
     } else if (page == 3) {
@@ -404,6 +624,26 @@ const ReservationScreen = () => {
 
     setProgress(0.25);
     setPage(1);
+
+    setTypeOfBaptism("");
+    setContactNumber("");
+    setPlaceOfBirth("");
+    setAge("");
+    setFatherName("");
+    setFatherBirthPlace("");
+    setMotherName("");
+    setMotherBirthPlace("");
+    setAddress("");
+    setTypeOfMarriage("");
+    setDateOfBaptism("");
+    setChurch("");
+    setDateOfSeminar("");
+    setCatechist("");
+    setGodFather("");
+    setGodFatherAddress("");
+    setGodMother("");
+    setGodMotherAddress("");
+    setAdditionalSponsors("");
   };
 
   return (
@@ -459,89 +699,313 @@ const ReservationScreen = () => {
             <Text style={styles.subtitle}>Event Details</Text>
             <View>
               {selectedEventType == "Sacrament" ? (
-                <>
-                  <Input
-                    label={"Name of Applicant"}
-                    value={applicantName}
-                    onChangeText={setApplicantName}
-                    style={{ marginBottom: 10 }}
-                  />
+                <View style={styles.formContainer}>
+                  <View style={styles.column}>
+                    <Input
+                      label={"Name of Applicant"}
+                      value={applicantName}
+                      onChangeText={setApplicantName}
+                      style={{ marginBottom: 10 }}
+                    />
+                  </View>
+                  <View style={styles.column}>
+                    <Datepicker
+                      label={"Date of Birth"}
+                      date={selectedDateDOB}
+                      onSelect={(date) => setSelectedDateDOB(date)}
+                      min={new Date(1900, 0, 1)} // Set min date to January 1, 1900
+                      max={new Date()} // Set max date to today
+                      style={{ width: "100%", marginBottom: 10 }}
+                    />
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.formContainer}>
+                  <View style={styles.column}>
+                    <Input
+                      label={"Name of Event"}
+                      value={eventName}
+                      onChangeText={setEventName}
+                      style={{ marginBottom: 10 }}
+                    />
+                  </View>
+                  <View style={styles.column}>
+                    <Input
+                      label={"Event Facilitator"}
+                      value={eventFacilitator}
+                      onChangeText={setEventFacilitator}
+                      style={{ marginBottom: 10 }}
+                    />
+                  </View>
+                </View>
+              )}
+
+              <View style={styles.formContainer}>
+                <View style={styles.column}>
                   <Datepicker
-                    label={"Date of Birth"}
-                    date={selectedDateDOB}
-                    onSelect={(date) => setSelectedDateDOB(date)}
-                    min={new Date(1900, 0, 1)} // Set min date to January 1, 1900
-                    max={new Date()} // Set max date to today
+                    label={"Schedule of Reservation"}
+                    date={selectedDateSR}
+                    onSelect={(nextDate) => {
+                      console.log(`Schedule of Reservation: ${nextDate}`);
+                      setSelectedDateSR(nextDate);
+                    }}
+                    min={minDateSR}
                     style={{ width: "100%", marginBottom: 10 }}
                   />
-                </>
-              ) : (
-                <>
-                  <Input
-                    label={"Name of Event"}
-                    value={eventName}
-                    onChangeText={setEventName}
+                </View>
+                <View style={styles.column}>
+                  <Select
+                    label={"Time of Reservation"}
+                    value={eventTime}
+                    onSelect={(index) => {
+                      const selected = availableTime[index - 1];
+                      console.log("Selected Time:", selected);
+                      setEventTime(selected);
+                    }}
                     style={{ marginBottom: 10 }}
-                  />
-                  <Input
-                    label={"Event Facilitator"}
-                    value={eventFacilitator}
-                    onChangeText={setEventFacilitator}
-                    style={{ marginBottom: 10 }}
-                  />
-                </>
-              )}
-              <Datepicker
-                label={"Schedule of Reservation"}
-                date={selectedDateSR}
-                onSelect={(nextDate) => {
-                  console.log(`Schedule of Reservation: ${nextDate}`);
-                  setSelectedDateSR(nextDate);
-                }}
-                min={minDateSR}
-                style={{ width: "100%", marginBottom: 10 }}
-              />
-              <Select
-                label={"Time of Reservation"}
-                value={eventTime}
-                onSelect={(index) => {
-                  const selected = availableTime[index - 1];
-                  console.log("Selected Time:", selected);
-                  setEventTime(selected);
-                }}
-                style={{ marginBottom: 10 }}
-              >
-                {availableTime.map((time, index) => (
-                  <SelectItem key={index} title={time} />
-                ))}
-              </Select>
-              <Select
-                label={"Payment Type"}
-                value={paymentType}
-                onSelect={(index) => {
-                  const selected = paymentTypes[index - 1].title;
-                  setPaymentType(selected);
-                  console.log("Selected Time:", selected);
-                }}
-                style={{ marginBottom: 10 }}
-              >
-                {paymentTypes.map((payment, index) => (
-                  <SelectItem key={index} title={payment.title} />
-                ))}
-              </Select>
+                  >
+                    {availableTime.map((time, index) => (
+                      <SelectItem key={index} title={time} />
+                    ))}
+                  </Select>
+                </View>
+              </View>
+
               {selectedEventType == "Sacrament" && (
                 <>
                   {selectedSacrament == "Baptism" && (
-                    <View style={styles.cardBox}>
-                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                        Baptismal Requirements
-                      </Text>
-                      {baptismalReqs.map((reqs, index) => (
-                        <Text key={index} style={{ marginLeft: 1 }}>
-                          - {reqs}
-                        </Text>
+                    <Select
+                      label={"Type of Baptism"}
+                      value={typeOfBaptism}
+                      onSelect={(index) => {
+                        const selected = baptismTypes[index - 1];
+                        console.log("Selected Baptism:", selected);
+                        setTypeOfBaptism(selected);
+                      }}
+                      style={{ marginBottom: 10 }}
+                    >
+                      {baptismTypes.map((type, index) => (
+                        <SelectItem key={index} title={type} />
                       ))}
-                    </View>
+                    </Select>
+                  )}
+                  {(selectedSacrament == "Baptism" ||
+                    selectedSacrament == "Communion") && (
+                    <>
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Contact Number"}
+                            value={contactNumber}
+                            onChangeText={setContactNumber}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Place of Birth"}
+                            value={placeOfBirth}
+                            onChangeText={setPlaceOfBirth}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                      </View>
+                      {selectedSacrament == "Communion" && (
+                        <Input
+                          label={"Age"}
+                          value={age}
+                          onChangeText={setAge}
+                          style={{ marginBottom: 10, marginHorizontal: 2 }}
+                        />
+                      )}
+                    </>
+                  )}
+                  {selectedSacrament != "Matrimony" && (
+                    <>
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Father's Name"}
+                            value={fatherName}
+                            onChangeText={setFatherName}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                        {selectedSacrament != "Confirmation" && (
+                          <View style={styles.column}>
+                            <Input
+                              label={"Father's Birth Place"}
+                              value={fatherBirthPlace}
+                              onChangeText={setFatherBirthPlace}
+                              style={{ marginBottom: 10 }}
+                            />
+                          </View>
+                        )}
+                      </View>
+
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Mother's Name (Maiden's Name)"}
+                            value={motherName}
+                            onChangeText={setMotherName}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                        {selectedSacrament != "Confirmation" && (
+                          <View style={styles.column}>
+                            <Input
+                              label={"Mother's Birth Place"}
+                              value={motherBirthPlace}
+                              onChangeText={setMotherBirthPlace}
+                              style={{ marginBottom: 10 }}
+                            />
+                          </View>
+                        )}
+                      </View>
+                    </>
+                  )}
+                  {selectedSacrament != "Matrimony" && (
+                    <Input
+                      label={"Address"}
+                      value={address}
+                      onChangeText={setAddress}
+                      style={{ marginBottom: 10, marginHorizontal: 2 }}
+                    />
+                  )}
+                  {selectedSacrament == "Baptism" && (
+                    <Select
+                      label={"Marriage Type of Parents"}
+                      value={typeOfMarriage}
+                      onSelect={(index) => {
+                        const selected = marriageTypes[index - 1];
+                        console.log("Selected Marriage:", selected);
+                        setTypeOfMarriage(selected);
+                      }}
+                      style={{ marginBottom: 10 }}
+                    >
+                      {marriageTypes.map((type, index) => (
+                        <SelectItem key={index} title={type} />
+                      ))}
+                    </Select>
+                  )}
+
+                  {(selectedSacrament == "Communion" ||
+                    selectedSacrament == "Confirmation") && (
+                    <>
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Date of Baptism"}
+                            value={dateOfBaptism}
+                            onChangeText={setDateOfBaptism}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+
+                        <View style={styles.column}>
+                          <Input
+                            label={"Church"}
+                            value={church}
+                            onChangeText={setChurch}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                      </View>
+
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Date of Seminar"}
+                            value={dateOfSeminar}
+                            onChangeText={setDateOfSeminar}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+
+                        <View style={styles.column}>
+                          <Input
+                            label={"Catechist"}
+                            value={catechist}
+                            onChangeText={setCatechist}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                      </View>
+                    </>
+                  )}
+
+                  {(selectedSacrament == "Baptism" ||
+                    selectedSacrament == "Confirmation") && (
+                    <>
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Godfather"}
+                            value={godFather}
+                            onChangeText={setGodFather}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+
+                        <View style={styles.column}>
+                          <Input
+                            label={"Godfather's Address"}
+                            value={godFatherAddress}
+                            onChangeText={setGodFatherAddress}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                      </View>
+
+                      <View style={styles.formContainer}>
+                        <View style={styles.column}>
+                          <Input
+                            label={"Godmother"}
+                            value={godMother}
+                            onChangeText={setGodMother}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+
+                        <View style={styles.column}>
+                          <Input
+                            label={"Godmother's Address"}
+                            value={godMotherAddress}
+                            onChangeText={setGodMotherAddress}
+                            style={{ marginBottom: 10 }}
+                          />
+                        </View>
+                      </View>
+                    </>
+                  )}
+                </>
+              )}
+
+              {selectedEventType == "Sacrament" && (
+                <>
+                  {selectedSacrament == "Baptism" && (
+                    <>
+                      <Input
+                        label={"Additional Sponsors"}
+                        value={additionalSponsors}
+                        onChangeText={setAdditionalSponsors}
+                        style={{ marginBottom: 10 }}
+                        multiline={true}
+                        numberOfLines={5}
+                      />
+
+                      <View style={styles.cardBox}>
+                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                          Baptismal Requirements
+                        </Text>
+                        {baptismalReqs.map((reqs, index) => (
+                          <Text key={index} style={{ marginLeft: 1 }}>
+                            - {reqs}
+                          </Text>
+                        ))}
+                      </View>
+                    </>
                   )}
 
                   {selectedSacrament == "Communion" && (
@@ -570,7 +1034,20 @@ const ReservationScreen = () => {
                     </View>
                   )}
 
-                  <View>
+                  {selectedSacrament == "Confirmation" && (
+                    <View style={styles.cardBox}>
+                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                        Confirmation Requirements
+                      </Text>
+                      {communionReqs.map((reqs, index) => (
+                        <Text key={index} style={{ marginLeft: 1 }}>
+                          - {reqs}
+                        </Text>
+                      ))}
+                    </View>
+                  )}
+
+                  <View style={{ marginBottom: 10 }}>
                     <Text
                       category="label"
                       appearance="hint"
@@ -578,21 +1055,7 @@ const ReservationScreen = () => {
                     >
                       Attach the Requirements
                     </Text>
-                    {/* <TouchableOpacity
-                      style={styles.uploadPhotoPlaceholder}
-                      onPress={pickRequirementImage}
-                    >
-                      <>
-                        <MaterialIcons
-                          name="cloud-upload"
-                          size={30}
-                          color="white"
-                        />
-                        <Text variant="bodySmall" style={{ color: "#aeaeae" }}>
-                          UPLOAD FILE
-                        </Text>
-                      </>
-                    </TouchableOpacity> */}
+
                     <Button
                       onPress={pickRequirementImage}
                       style={{ marginTop: 10 }}
@@ -608,6 +1071,30 @@ const ReservationScreen = () => {
                   </View>
                 </>
               )}
+
+              <Divider />
+              <View style={{ marginTop: 10 }}>
+                <Input
+                  label={"Reservation Fee"}
+                  value={reservationFee}
+                  onChangeText={setReservationFee}
+                  style={{ marginBottom: 10 }}
+                />
+                <Select
+                  label={"Payment Type"}
+                  value={paymentType}
+                  onSelect={(index) => {
+                    const selected = paymentTypes[index - 1].title;
+                    setPaymentType(selected);
+                    console.log("Selected Time:", selected);
+                  }}
+                  style={{ marginBottom: 10 }}
+                >
+                  {paymentTypes.map((payment, index) => (
+                    <SelectItem key={index} title={payment.title} />
+                  ))}
+                </Select>
+              </View>
             </View>
           </View>
         ) : (
@@ -660,16 +1147,112 @@ const ReservationScreen = () => {
                   />
                 </>
               )}
+              {selectedEventType == "Sacrament" &&
+                selectedSacrament != "Matrimony" && (
+                  <>
+                    <CustomListHeader title="Other Details" />
+
+                    {selectedSacrament == "Baptism" && (
+                      <CustomListItem
+                        title="Type of Baptism"
+                        value={typeOfBaptism}
+                      />
+                    )}
+
+                    {(selectedSacrament == "Baptism" ||
+                      selectedSacrament == "Communion") && (
+                      <>
+                        <CustomListItem
+                          title="Contact Number"
+                          value={contactNumber}
+                        />
+                        <CustomListItem
+                          title="Place of Birth"
+                          value={placeOfBirth}
+                        />
+                      </>
+                    )}
+
+                    {selectedSacrament == "Communion" && (
+                      <CustomListItem title="Age" value={age} />
+                    )}
+
+                    {selectedSacrament != "Matrimony" && (
+                      <>
+                        <CustomListItem
+                          title="Father's Name"
+                          value={fatherName}
+                        />
+                        {selectedSacrament != "Confirmation" && (
+                          <CustomListItem
+                            title="Father's Birth Place"
+                            value={fatherBirthPlace}
+                          />
+                        )}
+                        <CustomListItem
+                          title="Mother's Name"
+                          value={motherName}
+                        />
+                        {selectedSacrament != "Confirmation" && (
+                          <CustomListItem
+                            title="Mother's Birth Place"
+                            value={motherBirthPlace}
+                          />
+                        )}
+                        <CustomListItem title="Address" value={address} />
+                      </>
+                    )}
+
+                    {selectedSacrament == "Baptism" && (
+                      <CustomListItem
+                        title="Marriage Type"
+                        value={typeOfMarriage}
+                      />
+                    )}
+
+                    {(selectedSacrament == "Communion" ||
+                      selectedSacrament == "Confirmation") && (
+                      <>
+                        <CustomListItem
+                          title="Date of Baptism"
+                          value={dateOfBaptism}
+                        />
+                        <CustomListItem title="Church" value={church} />
+                        <CustomListItem
+                          title="Date of Seminar"
+                          value={dateOfSeminar}
+                        />
+                        <CustomListItem title="Catechist" value={catechist} />
+                      </>
+                    )}
+
+                    {(selectedSacrament == "Baptism" ||
+                      selectedSacrament == "Confirmation") && (
+                      <>
+                        <CustomListItem title="Godfather" value={godFather} />
+                        <CustomListItem
+                          title="Godfather's Address"
+                          value={godFatherAddress}
+                        />
+                        <CustomListItem title="Godmother" value={godMother} />
+                        <CustomListItem
+                          title="Godmother's Address"
+                          value={godMotherAddress}
+                        />
+                      </>
+                    )}
+
+                    {selectedSacrament == "Baptism" && (
+                      <CustomListItem
+                        title="Additional Sponsor"
+                        value={additionalSponsors}
+                      />
+                    )}
+                  </>
+                )}
 
               <CustomListHeader title="Payment Details" />
-              <CustomListItem
-                title="Fee"
-                value={
-                  selectedEventType == "Sacrament"
-                    ? sacramentDetails.fee
-                    : "100"
-                }
-              />
+              <CustomListItem title="Fee" value={reservationFee} />
             </View>
             {/* {paymentType == "Online Payment" && (
               <View style={styles.uploadPhotoContainer}>
@@ -898,6 +1481,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent background
+  },
+  formContainer: {
+    flexDirection: "row",
+    marginBottom: 5,
+  },
+  column: {
+    flex: 1,
+    marginHorizontal: 2,
   },
 });
 
